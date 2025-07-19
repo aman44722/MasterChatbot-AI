@@ -1,6 +1,15 @@
-// src/components/Common/Sidebar.js
-import React from 'react';
-import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import React, { useState } from 'react';
+// import { useNavigate, useLocation } from 'react-router-dom';
+
+import './style.css';
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Collapse,
+} from '@mui/material';
 import ChatIcon from '@mui/icons-material/Chat';
 import PeopleIcon from '@mui/icons-material/People';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -9,47 +18,164 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { useNavigate } from 'react-router-dom';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import BuildIcon from '@mui/icons-material/Build';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import SwapCallsIcon from '@mui/icons-material/SwapCalls';
+import DownloadIcon from '@mui/icons-material/Download';
 
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const [openDropdown, setOpenDropdown] = useState(null);
+
+
+  const toggleDropdown = (text) => {
+    setOpenDropdown(openDropdown === text ? null : text);
+  };
 
   const menuItems = [
-    { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-    { text: 'Chats', icon: <ChatIcon />, path: '/chats' },
-    { text: 'Users', icon: <PeopleIcon />, path: '/users' },
-    { text: 'Bot Answers', icon: <SmartToyIcon />, path: '/answers' },
-    { text: 'Leads', icon: <AssignmentIcon />, path: '/leads' },
-    { text: 'Analytics', icon: <BarChartIcon />, path: '/analytics' },
-    { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
-    { text: 'Logout', icon: <LogoutIcon />, path: '/logout' }
+    {
+      text: 'Dashboard',
+      icon: <DashboardIcon fontSize='10px' />,
+      path: '/',
+    },
+    {
+      text: 'SetUp',
+      icon: <BuildIcon fontSize='10px' />,
+      children: [
+        {
+          text: 'View Setup',
+          icon: <VisibilityIcon fontSize='10px' />,
+          path: '/setup',
+        },
+        {
+          text: 'Flow Setup',
+          icon: <SwapCallsIcon fontSize='10px' />,
+          path: '/setup/flow',
+        },
+        {
+          text: 'Install',
+          icon: <DownloadIcon fontSize='10px' />,
+          path: '/setup/install',
+        },
+      ],
+    },
+    {
+      text: 'Chats',
+      icon: <ChatIcon fontSize='10px' />,
+      path: '/chats',
+    },
+    {
+      text: 'Users',
+      icon: <PeopleIcon fontSize='10px' />,
+      path: '/users',
+    },
+    {
+      text: 'Bot Answers',
+      icon: <SmartToyIcon fontSize='10px' />,
+      path: '/answers',
+    },
+    {
+      text: 'Leads',
+      icon: <AssignmentIcon fontSize='10px' />,
+      path: '/leads',
+    },
+    {
+      text: 'Analytics',
+      icon: <BarChartIcon fontSize='10px' />,
+      path: '/analytics',
+    },
+    {
+      text: 'Settings',
+      icon: <SettingsIcon fontSize='10px' />,
+      path: '/settings',
+    },
+    {
+      text: 'Logout',
+      icon: <LogoutIcon fontSize='10px' />,
+      path: '/logout',
+    },
   ];
+
+  const location = useLocation();
+
 
   return (
     <Drawer
       variant="permanent"
       anchor="left"
       sx={{
-        width: 240,
+        width: 180,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
-          width: 240,
+          width: 180,
           boxSizing: 'border-box',
-          backgroundColor: '#f4f4f4',
+          boxShadow: '0px 4px 20px #ddd',
+          backgroundColor: '#fff',
         },
       }}
     >
-      <List sx={{ pt: '80px' }}> {/* Add top padding so Dashboard appears below header */}
+      <List sx={{ pt: '80px', }}>
         {menuItems.map((item) => (
-          <ListItem
-            button
-            key={item.text}
-            onClick={() => navigate(item.path)}
-          >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
-          </ListItem>
+          <React.Fragment key={item.text}>
+            <ListItem
+
+              button
+              onClick={() =>
+                item.children
+                  ? toggleDropdown(item.text)
+                  : navigate(item.path)
+              }
+              sx={{
+                cursor:'pointer',
+                transition: 'ease-in-out',
+                borderLeft: location.pathname === item.path ? '3px solid #006C74' : 'transparent',
+                color: location.pathname === item.path ? '#006C74' : '#000',
+                '&:hover': {
+                  backgroundColor: '#e0f7fa',
+                },
+              }}
+
+            >
+              <ListItemIcon sx={{
+                color: '#006C74',
+              }}>{item.icon}</ListItemIcon>
+              <ListItemText sx={{
+                fontSize: '15px'
+              }} primary={item.text} />
+              {item.children &&
+                (openDropdown === item.text ? <ExpandLess /> : <ExpandMore />)}
+            </ListItem>
+
+            {item.children && (
+              <Collapse in={openDropdown === item.text} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {item.children.map((child) => (
+                    <ListItem
+                      button
+                      key={child.text}
+                      sx={{
+                        pl: 4, cursor:'pointer',
+                         borderLeft: location.pathname === child.path ? '3px solid #006C74' : 'transparent',
+                '&:hover': {
+                  backgroundColor: '#e0f7fa',
+                }, color: location.pathname === child.path ? '#006C74' : '#000',
+                      }}
+                      onClick={() => navigate(child.path)}
+                    >
+                      <ListItemIcon sx={{
+                        color: '#006C74'
+                      }}>{child.icon}</ListItemIcon>
+                      <ListItemText primary={child.text} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Collapse>
+            )}
+          </React.Fragment>
         ))}
       </List>
     </Drawer>

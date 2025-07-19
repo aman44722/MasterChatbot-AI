@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './AdminSettings.css';
+import { RgbaColorPicker } from "react-colorful";
 import picImg from "../../assets/images/picture.svg";
 import avt1 from "../../assets/images/avatar/avatar-v101.svg";
 import avt2 from "../../assets/images/avatar/avatar-v102.svg";
@@ -12,10 +13,9 @@ import avt8 from "../../assets/images/avatar/avatar-v109.svg";
 import avt9 from "../../assets/images/avatar/avatar-v110.svg";
 import avt10 from "../../assets/images/avatar/avatar-v111.svg";
 import AddIcon from '@mui/icons-material/Add';
-import { Box } from '@mui/material';
+import { Box, colors } from '@mui/material';
 
-const AdminSettings = () => {
-
+const SetUp = () => {
   const [activeTab, setActiveTab] = useState('text');
   const [botName, setBotName] = useState('chatbot');
   const [welcomeText, setWelcomeText] = useState('Hey');
@@ -23,7 +23,6 @@ const AdminSettings = () => {
   const [font, setFont] = useState('Nanum Gothic Coding');
   const [fontSize, setFontSize] = useState('14px');
   const [companyLogo, setCompanyLogo] = useState('https://cdn-icons-png.flaticon.com/512/4712/4712027.png');
-  // const [botPositionSave, setBotPositionSave] = useState('');
   const [isHeaderExpanded, setIsHeaderExpanded] = useState(false);
   const [botPosition, setBotPosition] = useState('right'); // default value
   const [selectedBubbleStyle, setSelectedBubbleStyle] = useState('style1');
@@ -32,15 +31,22 @@ const AdminSettings = () => {
   const [themeColors, setThemeColors] = useState({ header: "#006C74", question: "#ffffff", answer: "#007bff", option: "#007bff", });
 
   const [selectedTab, setSelectedTab] = useState("Gradient");
+  const [chatColor, setChatColor] = useState({ r: 255, g: 255, b: 255, a: 1 });
 
 
   const [selectedTheme, setSelectedTheme] = useState('#006C74');
+  const [overlayOpacity, setOverlayOpacity] = useState(0);
 
-
-  const [isTransparent, setIsTransparent] = useState(false);
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [hovered, setHovered] = useState(false);
+
+  const fileInputRef = useRef(null);
+  const [uploadedImage, setUploadedImage] = useState(null);
+
+
+
+
   const isColorDark = (hexColor) => {
     const r = parseInt(hexColor.substr(1, 2), 16);
     const g = parseInt(hexColor.substr(3, 2), 16);
@@ -172,13 +178,54 @@ const AdminSettings = () => {
     alert('Settings saved!');
   };
 
+  const handleReset = () => {
+    // Clear localStorage
+    localStorage.removeItem('botSettings');
+
+    // Reset all states to default
+    setCompanyLogo('https://cdn-icons-png.flaticon.com/512/4712/4712027.png');
+    setAvatar(null);
+    setBotName('chatbot');
+    setWelcomeText('Hey');
+    setDescription('Discriptions');
+    setFont('Nanum Gothic Coding');
+    setFontSize('14px');
+    setBotPosition('right');
+    setSelectedBubbleStyle('style1');
+    setBorderRadius('10');
+    setTextAlign('left');
+    setThemeColors({
+      header: "#006C74",
+      question: "#ffffff",
+      answer: "#007bff",
+      option: "#007bff",
+    });
+    setUploadedImage(null);
+    setSelectedTheme('#006C74');
+    setOverlayOpacity(0);
+    setChatColor({ r: 255, g: 255, b: 255, a: 1 });
+
+    alert('Settings reset to default!');
+  };
+
+
   return (
     <>
       <Box style={{ display: 'flex', height: '84vh', marginTop: '5%', padding: '10px', width: '100%' }}>
 
 
         {/* left */}
-        <div style={{ width: '30%', boxShadow: '0px 4px 20px #d8d8d8', borderRadius: '20px', borderRight: '1px solid #eee', overflowY: 'auto', background: '#f9fbfd', scrollbarWidth: 'thin', scrollbarColor: '#000' }}>
+        <Box
+          className="custom-scrollbar"
+          sx={{
+            width: '30%',
+            boxShadow: '0px 4px 20px #d8d8d8',
+            borderRadius: '20px',
+            borderRight: '1px solid #eee',
+            overflowY: 'auto',
+            background: '#f9fbfd',
+          }}
+        >
 
           {/* Tab */}
           <div
@@ -220,7 +267,7 @@ const AdminSettings = () => {
           </div>
 
           {/* Tab content */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: '15px', height: '100vh', boxShadow: '0 10px 14px rgba(0,0,0,0.05)' }}>
+          <div style={{ flex: 1, padding: '15px', height: '100vh', boxShadow: '0 10px 14px rgba(0,0,0,0.05)' }}>
 
             {activeTab === 'text' && (
               <div style={{ marginTop: '40px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -867,76 +914,181 @@ const AdminSettings = () => {
                     </div>
                   )}
 
-
                   {selectedTab === "Color" && (
                     <div style={{ marginTop: '20px' }}>
-
-                      {/* Color Picker */}
-                      <input
-                        type="color"
-                        value={themeColors.chatBackground}
-                        onChange={(e) =>
-                          setThemeColors({ ...themeColors, chatBackground: e.target.value })
-                        }
-                        style={{
-                          width: '100%',
-                          height: '120px',
-                          border: '1px solid #ccc',
-                          borderRadius: '8px',
-                          background: '#fff',
-                          boxShadow: '0 0 5px rgba(0,0,0,0.1)',
-                          cursor: 'pointer',
+                      <RgbaColorPicker
+                        color={chatColor}
+                        onChange={(newColor) => {
+                          setChatColor(newColor);
+                          setThemeColors({ ...themeColors, chatBackground: `rgba(${newColor.r},${newColor.g},${newColor.b},${newColor.a})` });
                         }}
+                        style={{ width: '100%', }}
                       />
-
-                      {/* Color Hex Display */}
-                      <p style={{ textAlign: 'center', marginTop: '10px', fontWeight: 500 }}>
-                        {themeColors.chatBackground}
+                      <p style={{ textAlign: 'center', fontWeight: 500 }}>
+                        rgba({chatColor.r}, {chatColor.g}, {chatColor.b}, {chatColor.a})
                       </p>
-
-                      {/* Toggle for Transparency */}
-                      <label
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          marginTop: '20px',
-                          gap: '10px',
-                          fontSize: '14px',
-                          fontWeight: 500,
-                        }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={!isTransparent}
-                          onChange={() => setIsTransparent(!isTransparent)}
-                          style={{
-                            appearance: 'none',
-                            width: '40px',
-                            height: '20px',
-                            backgroundColor: isTransparent ? '#ccc' : '#f87171',
-                            borderRadius: '20px',
-                            position: 'relative',
-                            outline: 'none',
-                            cursor: 'pointer',
-                          }}
-                        />
-                        Not Transparent
-                      </label>
                     </div>
                   )}
 
-                </div>
+                  {selectedTab === "Image" && (
+                    <div style={{ margin: '20px 0px', padding: '20px 15px', backgroundColor: '#f2f4f7', boxShadow: '0px 4px 20px #d8d8d8', borderRadius: '10px', border: '2px solid #d8d8d8', height: '30vh', overflowY: 'scroll', overflowX: 'hidden', scrollbarWidth: 'thin' }}>
 
-                {/* <input type="color" defaultValue="#ffffff" style={{ width: '100%', marginBottom: '10px' }} /> */}
-                {/* 
-                <label style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <input type="checkbox" /> Not Transparent
-                </label> */}
+                      {/* Image Preview Grid */}
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(3, 1fr)',
+                        gap: '8px',
+                        margin: '20px 0px',
+                      }}>
+                        {[
+                          'https://custpostimages.s3.ap-south-1.amazonaws.com/ss_images/bot_background_1.png',
+                          'https://custpostimages.s3.ap-south-1.amazonaws.com/ss_images/bot_background_2.png',
+                          'https://custpostimages.s3.ap-south-1.amazonaws.com/ss_images/bot_background_3.png',
+                          'https://custpostimages.s3.ap-south-1.amazonaws.com/ss_images/bot_background_4.png',
+                          'https://custpostimages.s3.ap-south-1.amazonaws.com/ss_images/bot_background_5.png',
+                        ].map((img, idx) => (
+                          <img
+                            key={idx}
+                            src={img}
+                            onClick={() => setThemeColors({ ...themeColors, chatBackground: `url(${img})` })}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              borderRadius: '8px',
+                              boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+                              border:
+                                themeColors.chatBackground === `url(${img})`
+                                  ? '3px solid #4F46E5'
+                                  : '1px solid #ccc',
+                              cursor: 'pointer',
+                            }}
+                          />
+                        ))}
+
+                        {uploadedImage && (
+                          <div style={{ position: 'relative' }}>
+                            <img
+                              src={uploadedImage}
+                              onClick={() => setThemeColors({ ...themeColors, chatBackground: `url(${uploadedImage})` })}
+                              style={{
+                                width: '100%',
+                                height: '100% ',
+                                objectFit: 'contain',
+                                borderRadius: '8px',
+                                boxShadow: '0 0 10px rgba(0,0,0,0.1)',
+                                border:
+                                  themeColors.chatBackground === `url(${uploadedImage})`
+                                    ? '3px solid #4F46E5'
+                                    : '1px solid #ccc',
+                                cursor: 'pointer',
+                              }}
+                            />
+                            {/* Delete X Button */}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation(); // prevent image click trigger
+                                setUploadedImage(null);
+                                setThemeColors({ ...themeColors, chatBackground: '' });
+                              }}
+                              style={{
+                                position: 'absolute',
+                                top: '5px',
+                                right: '5px',
+                                backgroundColor: '#ff4d4f',
+                                border: 'none',
+                                color: '#fff',
+                                borderRadius: '50%',
+                                width: '20px',
+                                height: '20px',
+                                fontSize: '12px',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                boxShadow: '0 0 5px rgba(0,0,0,0.2)',
+                              }}
+                              title="Delete uploaded image"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+
+                      {/* Hidden File Input */}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        style={{ display: 'none', backgroundSize:'contain', backgroundPosition: 'center', }}
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file && file.size < 2 * 380 * 685) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setUploadedImage(reader.result); // Show in preview
+                              setThemeColors({
+                                ...themeColors,
+                                chatBackground: `url(${reader.result})`, // Apply immediately
+                              });
+                            };
+                            reader.readAsDataURL(file);
+                          } else {
+                            alert('File size should be less than 5MB');
+                          }
+                        }}
+                      />
+
+
+                      {/* Upload Button */}
+                      <div style={{ textAlign: 'center' }}>
+                        <button
+                          onClick={() => fileInputRef.current.click()}
+                          style={{
+                            padding: '10px 20px',
+                            backgroundColor: '#4F46E5',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: '6px',
+                            fontWeight: '500',
+                            cursor: 'pointer',
+                            marginTop: '10px'
+                          }}
+                        >
+                          Upload
+                        </button>
+                        <p style={{ fontSize: '12px', color: '#888', marginTop: '5px' }}>
+                          File Size should be less than 5 MB <br /> <span> Image Must Be 380*585 </span>
+                        </p>
+                      </div>
+
+                      {/* Overlay Slider */}
+                      <div style={{ marginTop: '20px' }}>
+                        <label style={{ fontWeight: '500', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          Overlay ({overlayOpacity}%)
+                          <span title="Adjust background overlay opacity">ℹ️</span>
+                        </label>
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={overlayOpacity}
+                          onChange={(e) => setOverlayOpacity(Number(e.target.value))}
+                          style={{ width: '100%' }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+
+                </div>
               </div>
             )}
           </div>
 
-          {/* Save Button */}
+          {/* Save & Reset Button Footer */}
           <div
             style={{
               position: 'sticky',
@@ -951,26 +1103,43 @@ const AdminSettings = () => {
               alignItems: 'center',
               zIndex: 9,
               boxShadow: '0 -2px 4px rgba(0,0,0,0.05)',
-              marginTop: 'auto'
+              marginTop: 'auto',
             }}
           >
             <p style={{ fontSize: '14px', color: '#888', margin: 0 }}>Apply Changes?</p>
-            <button
-              style={{
-                background: '#4F46E5',
-                color: 'white',
-                padding: '10px 25px',
-                border: 'none',
-                borderRadius: '8px',
-                fontWeight: '500',
-                cursor: 'pointer'
-              }}
-              onClick={handleSave}
-            >
-              Save
-            </button>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                style={{
+                  background: '#f44336',
+                  color: 'white',
+                  padding: '10px 25px',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                }}
+                onClick={handleReset} // Your reset logic here
+              >
+                Reset
+              </button>
+              <button
+                style={{
+                  background: '#4F46E5',
+                  color: 'white',
+                  padding: '10px 25px',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                }}
+                onClick={handleSave}
+              >
+                Save
+              </button>
+            </div>
           </div>
-        </div>
+
+        </Box>
 
         {/* right  */}
         <div style={{ flex: 1, padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '75%', }}>
@@ -1002,23 +1171,43 @@ const AdminSettings = () => {
                   right: botPosition === 'left' ? 'unset' : '30px',
                   left: botPosition === 'left' ? '42%' : botPosition === 'center' ? 'unset' : 'auto',
                   transform: botPosition === 'center' ? 'translateY(50%)' : 'none',
-                  backgroundColor: '#fff',
-                  // border: '2px solid #007BFF',
-                  borderRadius: '50%',
-                  padding: '5px',
+                  backgroundColor: 'transparent',
                   cursor: 'pointer',
-                  boxShadow: '0px 4px 20px #d8d8d8',
                   zIndex: 1000,
                 }}
               >
-                <span className="status-dot"></span>
-                <img
-                  src={companyLogo}
-                  alt="Bot"
-                  style={{ width: '60px', height: '60px', borderRadius: '50%' }}
-                />
+                {/* Welcome Text (Bubble) */}
+                {welcomeText && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      right: '80px', // move left from icon
+                      top: '20px',
+                      backgroundColor: '#0F1C3F',
+                      color: '#fff',
+                      fontSize: '13px',
+                      padding: '6px 12px',
+                      borderRadius: '8px',
+                      whiteSpace: 'nowrap',
+                      fontWeight: 500,
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.2)',
+                    }}
+                  >
+                    {welcomeText}
+                  </div>
+                )}
+                {/* Chat Icon */}
+                <div style={{ position: 'relative', borderRadius: '50%', boxShadow: '0px 4px 20px #d8d8d8', }}>
+                  <span className="status-dot"></span>
+                  <img
+                    src={companyLogo}
+                    alt="Bot"
+                    style={{ height: '70px', width: '70px', borderRadius: '50%' }}
+                  />
+                </div>
               </div>
             )}
+
             {/* Footer Block */}
             <div className="footer-block"></div>
 
@@ -1053,7 +1242,7 @@ const AdminSettings = () => {
                   style={{
                     background: themeColors.header,
                     borderRadius: '10px 10px 0 0',
-                    padding: isHeaderExpanded ? '20px' : '10px 15px',
+                    padding: isHeaderExpanded ? '25px' : '20px 15px',
                     color: '#fff',
                     cursor: 'pointer',
                     display: 'flex',
@@ -1101,7 +1290,10 @@ const AdminSettings = () => {
                 </div>
 
                 {/* Body Section */}
-                <div style={{ padding: '15px', overflowY: 'auto', height: 'calc(100% - 100px)', background: themeColors.chatBackground }}>
+                <div style={{
+                  padding: '15px', overflowY: 'auto', height: '61vh', background: themeColors.chatBackground, objectFit: 'contain', backgroundColor: `rgba(0,0,0,${overlayOpacity / 100})`,
+                  backgroundBlendMode: 'overlay'
+                }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '10px', }}>
                     <img src={avatar} alt="bot" style={{ width: '20px', height: '20px', marginRight: '10px', borderRadius: '50%' }} />
                     <div style={{ background: themeColors.question, color: textColorQuestion, padding: '8px 12px', borderRadius: '10px', fontSize: '13px' }}>Bot question here</div>
@@ -1128,6 +1320,19 @@ const AdminSettings = () => {
                   <button style={{ width: '100%', padding: '8px', background: themeColors.option, color: textColorOptions, border: 'none', borderRadius: '6px', marginTop: '5px', borderRadius: `${borderRadius}px`, border: `2px solid ${themeColors.optionBorder}` }}>Option 2</button>
                   <button style={{ width: '100%', padding: '8px', background: themeColors.answer, color: textColor, border: 'none', borderRadius: '6px', marginTop: '10px', borderRadius: `${borderRadius}px`, textAlign: textAlign, }}>Confirm</button>
                 </div>
+
+
+                {/* Footer */}
+                <div style={{
+                  background: '#fff',
+                  textAlign: 'center',
+                  padding: '10px 15px',
+                  boxShadow: '0px 4px 20px #d8d8d8',
+                  fontSize: '12px',
+                  borderTop: '1px solid #ddd'
+                }}>
+                  Powered by A2 Digital
+                </div>
               </div>
             </div>
           )}
@@ -1142,4 +1347,4 @@ const AdminSettings = () => {
   );
 };
 
-export default AdminSettings;
+export default SetUp;

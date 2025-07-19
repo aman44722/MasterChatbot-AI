@@ -13,7 +13,10 @@ import Settings from './pages/Settings';
 import Logout from './pages/Logout';
 // import UserChat from './pages/UserChat';
 import UserMessage from './components/UserMessage/UserMessage';
-import AdminSettings from './components/Admin/AdminSettings';
+import SetUp from './pages/SetupPage/SetUp';
+// import SetUp from './components/Admin/ViewSetupComponent/SetUp';
+
+
 
 function App() {
   return (
@@ -28,7 +31,8 @@ function App() {
           <Route path="/leads" element={<Leads />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="/admin-settings" element={<AdminSettings />} />
+          <Route path="/setup" element={<SetUp />} />
+          {/* <Route path="/setup" element={<SetUp />} /> */}
           <Route path="/logout" element={<Logout />} />
         </Route>
 
