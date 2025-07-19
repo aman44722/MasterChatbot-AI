@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import './AdminSettings.css';
 import { Box } from '@mui/material';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { updateSetting, resetSettings } from '../../redux/botSettingsSlice';
+
+
 import TextSettings from '../../components/Admin/ViewSetupComponent/TextSettings';
 import LogoSettings from '../../components/Admin/ViewSetupComponent/LogoSettings';
 import LayoutSettings from '../../components/Admin/ViewSetupComponent/LayoutSettings';
@@ -9,86 +13,52 @@ import ThemeSettings from '../../components/Admin/ViewSetupComponent/ThemeSettin
 import ChatPreview from '../../components/Admin/ViewSetupComponent/ChatPreview';
 
 const SetUp = () => {
+  const dispatch = useDispatch();
+  const {
+    botName,
+    welcomeText,
+    description,
+    font,
+    fontSize,
+    companyLogo,
+    avatar,
+    botPosition,
+    selectedBubbleStyle,
+    borderRadius,
+    textAlign,
+    themeColors,
+    overlayOpacity,
+    chatColor,
+    uploadedImage
+  } = useSelector((state) => state.botSettings);
+
+
   const [activeTab, setActiveTab] = useState('text');
-  const [botName, setBotName] = useState('chatbot');
-  const [welcomeText, setWelcomeText] = useState('Hey');
-  const [description, setDescription] = useState('Discriptions');
-  const [font, setFont] = useState('Nanum Gothic Coding');
-  const [fontSize, setFontSize] = useState('14px');
-  const [companyLogo, setCompanyLogo] = useState('https://cdn-icons-png.flaticon.com/512/4712/4712027.png');
-  const [avatar, setAvatar] = useState(null);
-  const [botPosition, setBotPosition] = useState('right');
-  const [selectedBubbleStyle, setSelectedBubbleStyle] = useState('style1');
-  const [borderRadius, setBorderRadius] = useState('10');
-  const [textAlign, setTextAlign] = useState('left');
-  const [themeColors, setThemeColors] = useState({
-    header: "#006C74",
-    question: "#ffffff",
-    answer: "#007bff",
-    option: "#007bff",
-    optionBorder: "#444c5c"
-  });
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isHeaderExpanded, setIsHeaderExpanded] = useState(false);
-  const [overlayOpacity, setOverlayOpacity] = useState(0);
-  const [chatColor, setChatColor] = useState({ r: 255, g: 255, b: 255, a: 1 });
-  const [uploadedImage, setUploadedImage] = useState(null);
+
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('botSettings'));
     if (saved) {
-      setCompanyLogo(saved.companyLogo || companyLogo);
-      setAvatar(saved.avatar || avatar);
-      setBotName(saved.botName || botName);
-      setWelcomeText(saved.welcomeText || welcomeText);
-      setDescription(saved.description || description);
-      setFont(saved.font || font);
-      setFontSize(saved.fontSize || fontSize);
-      setBotPosition(saved.botPosition || botPosition);
-      setSelectedBubbleStyle(saved.selectedBubbleStyle || selectedBubbleStyle);
-      setBorderRadius(saved.borderRadius || borderRadius);
-      setTextAlign(saved.textAlign || textAlign);
-      setThemeColors(saved.themeColors || themeColors);
+      dispatch(updateSetting(saved));
     }
-  }, []);
+  }, [dispatch]);
+
+  const botSettings = useSelector((state) => state.botSettings);
 
   const handleSave = () => {
-    localStorage.setItem(
-      'botSettings',
-      JSON.stringify({
-        companyLogo, avatar, botName, welcomeText, description,
-        font, fontSize, botPosition, selectedBubbleStyle,
-        borderRadius, textAlign, themeColors
-      })
-    );
+    localStorage.setItem('botSettings', JSON.stringify(botSettings));
     alert('Settings saved!');
   };
 
+
   const handleReset = () => {
     localStorage.removeItem('botSettings');
-    setCompanyLogo('https://cdn-icons-png.flaticon.com/512/4712/4712027.png');
-    setAvatar(null);
-    setBotName('chatbot');
-    setWelcomeText('Hey');
-    setDescription('Discriptions');
-    setFont('Nanum Gothic Coding');
-    setFontSize('14px');
-    setBotPosition('right');
-    setSelectedBubbleStyle('style1');
-    setBorderRadius('10');
-    setTextAlign('left');
-    setThemeColors({
-      header: "#006C74",
-      question: "#ffffff",
-      answer: "#007bff",
-      option: "#007bff",
-      optionBorder: "#444c5c"
-    });
-    setOverlayOpacity(0);
-    setChatColor({ r: 255, g: 255, b: 255, a: 1 });
-    setUploadedImage(null);
+    dispatch(resetSettings());
     alert('Settings reset to default!');
   };
+
 
   return (
     <Box style={{ display: 'flex', height: '84vh', marginTop: '5%', padding: '10px', width: '100%' }}>
@@ -133,53 +103,56 @@ const SetUp = () => {
           {activeTab === 'text' && (
             <TextSettings
               botName={botName}
-              setBotName={setBotName}
+              setBotName={(value) => dispatch(updateSetting({ botName: value }))}
               welcomeText={welcomeText}
-              setWelcomeText={setWelcomeText}
+              setWelcomeText={(value) => dispatch(updateSetting({ welcomeText: value }))}
               description={description}
-              setDescription={setDescription}
+              setDescription={(value) => dispatch(updateSetting({ description: value }))}
               font={font}
-              setFont={setFont}
+              setFont={(value) => dispatch(updateSetting({ font: value }))}
               fontSize={fontSize}
-              setFontSize={setFontSize}
+              setFontSize={(value) => dispatch(updateSetting({ fontSize: value }))}
             />
           )}
           {activeTab === 'logo' && (
             <LogoSettings
               companyLogo={companyLogo}
-              setCompanyLogo={setCompanyLogo}
+              setCompanyLogo={(value) => dispatch(updateSetting({ companyLogo: value }))}
               avatar={avatar}
-              setAvatar={setAvatar}
+              setAvatar={(value) => dispatch(updateSetting({ avatar: value }))}
             />
           )}
           {activeTab === 'layout' && (
             <LayoutSettings
               botPosition={botPosition}
-              setBotPosition={setBotPosition}
+              setBotPosition={(value) => {
+                dispatch(updateSetting({ botPosition: value }));
+                setIsChatOpen(false);
+              }}
               selectedBubbleStyle={selectedBubbleStyle}
-              setSelectedBubbleStyle={setSelectedBubbleStyle}
+              setSelectedBubbleStyle={(value) => dispatch(updateSetting({ selectedBubbleStyle: value }))}
               borderRadius={borderRadius}
-              setBorderRadius={setBorderRadius}
+              setBorderRadius={(value) => dispatch(updateSetting({ borderRadius: value }))}
               textAlign={textAlign}
-              setTextAlign={setTextAlign}
+              setTextAlign={(value) => dispatch(updateSetting({ textAlign: value }))}
             />
           )}
           {activeTab === 'themes' && (
             <ThemeSettings
               themeColors={themeColors}
-              setThemeColors={setThemeColors}
+              setThemeColors={(value) => dispatch(updateSetting({ themeColors: value }))}
               overlayOpacity={overlayOpacity}
-              setOverlayOpacity={setOverlayOpacity}
+              setOverlayOpacity={(value) => dispatch(updateSetting({ overlayOpacity: value }))}
               chatColor={chatColor}
-              setChatColor={setChatColor}
+              setChatColor={(value) => dispatch(updateSetting({ chatColor: value }))}
               uploadedImage={uploadedImage}
-              setUploadedImage={setUploadedImage}
+              setUploadedImage={(value) => dispatch(updateSetting({ uploadedImage: value }))}
             />
           )}
         </div>
 
         {/* Save & Reset Footer */}
-        <div style={{ position: 'sticky', bottom: 0, background: '#fff', padding: '16px 20px', zIndex: 9, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+        <div style={{ position: 'sticky', bottom: 0, background: '#fff', padding: '16px 20px', zIndex: 9, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <p style={{ fontSize: '14px', color: '#888', margin: 0 }}>Apply Changes?</p>
           <div style={{ display: 'flex', gap: '10px' }}>
             <button onClick={handleReset} style={{ background: '#f44336', color: '#fff', padding: '10px 25px', borderRadius: '8px', border: 'none' }}>Reset</button>
