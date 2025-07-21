@@ -147,7 +147,8 @@ const LogoSettings = ({ companyLogo, setCompanyLogo, avatar, setAvatar }) => {
               zIndex: 1,
               background: 'white',
               border: 'none',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              height:'100%',
             }}
           >
             ◀

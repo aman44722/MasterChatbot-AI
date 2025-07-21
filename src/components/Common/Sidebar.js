@@ -54,7 +54,7 @@ const Sidebar = () => {
         {
           text: 'Flow Setup',
           icon: <SwapCallsIcon fontSize='10px' />,
-          path: '/setup/flow',
+          path: '/flow-setup',
         },
         {
           text: 'Install',

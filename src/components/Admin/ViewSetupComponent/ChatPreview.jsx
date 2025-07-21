@@ -31,7 +31,7 @@ const ChatPreview = ({
   const textColorOptions = isColorDark(themeColors.option) ? '#ffffff' : '#000000';
 
   return (
-    <div style={{ flex: 1, padding: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ flex: 1,  display: 'flex', alignItems: 'start', padding:'0px 10px', marginLeft:'10px', justifyContent: 'center', backgroundColor:'#ffffff', boxShadow:'0px 4px 20px #dbdbdb', borderRadius:'10px' }}>
       <div className="mock-browser-layout">
         <div className="browser-bar">
           <span className="dot red"></span>

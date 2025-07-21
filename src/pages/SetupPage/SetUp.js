@@ -3,7 +3,7 @@ import './AdminSettings.css';
 import { Box } from '@mui/material';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { updateSetting, resetSettings } from '../../redux/botSettingsSlice';
+
 
 
 import TextSettings from '../../components/Admin/ViewSetupComponent/TextSettings';
@@ -11,6 +11,7 @@ import LogoSettings from '../../components/Admin/ViewSetupComponent/LogoSettings
 import LayoutSettings from '../../components/Admin/ViewSetupComponent/LayoutSettings';
 import ThemeSettings from '../../components/Admin/ViewSetupComponent/ThemeSettings';
 import ChatPreview from '../../components/Admin/ViewSetupComponent/ChatPreview';
+import { resetSettings, updateSetting } from '../../redux/botSettingsSlice';
 
 const SetUp = () => {
   const dispatch = useDispatch();
@@ -46,21 +47,16 @@ const SetUp = () => {
   }, [dispatch]);
 
   const botSettings = useSelector((state) => state.botSettings);
-
-  const handleSave = () => {
+    const handleSave = () => {
     localStorage.setItem('botSettings', JSON.stringify(botSettings));
     alert('Settings saved!');
   };
-
-
-  const handleReset = () => {
+    const handleReset = () => {
     localStorage.removeItem('botSettings');
     dispatch(resetSettings());
     alert('Settings reset to default!');
   };
-
-
-  return (
+    return (
     <Box style={{ display: 'flex', height: '84vh', marginTop: '5%', padding: '10px', width: '100%' }}>
       {/* Left Panel */}
       <Box
@@ -76,7 +72,7 @@ const SetUp = () => {
       >
         {/* Tab Navigation */}
         <div style={{ position: 'sticky', top: 0, background: '#fff', padding: '16px 20px', zIndex: 9 }}>
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div style={{ display: 'flex', justifyContent:'center',alignItems:'center', gap: '10px', overflowX:'scroll' }}>
             {['text', 'logo', 'layout', 'themes'].map(tab => (
               <button
                 key={tab}
@@ -90,6 +86,7 @@ const SetUp = () => {
                   fontWeight: activeTab === tab ? '600' : '500',
                   color: activeTab === tab ? '#333' : '#777',
                   cursor: 'pointer',
+                  margin:activeTab === tab ? '2px 0px':""
                 }}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}

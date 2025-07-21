@@ -294,7 +294,7 @@ const ThemeSettings = ({
             display: "grid",
             gridTemplateColumns: "repeat(5, 1fr)",
             gap: "10px",
-            marginTop: "20px",height: '50vh', overflowY: 'scroll', scrollbarWidth: 'thin'
+            marginTop: "20px",height: '50vh', overflowY: 'scroll'
           }}
         >
           {gradientPresets.map((gradient, idx) => (

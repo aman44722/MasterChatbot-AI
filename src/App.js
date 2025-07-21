@@ -14,7 +14,12 @@ import Logout from './pages/Logout';
 // import UserChat from './pages/UserChat';
 import UserMessage from './components/UserMessage/UserMessage';
 import SetUp from './pages/SetupPage/SetUp';
+// import EmbedCode from './components/Embeded/EmbedCode';
+// import ChatPreviewPage from './pages/SetupPage/ChatPreviewPage';
+// import ChatPreview from './components/Admin/FlowSetupComponent/ChatPreview';
+import FlowSetup from './pages/FlowSetupPage/FlowSetup';
 // import SetUp from './components/Admin/ViewSetupComponent/SetUp';
+
 
 
 
@@ -32,6 +37,11 @@ function App() {
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/setup" element={<SetUp />} />
+          {/* <Route path="/chat-preview" element={<ChatPreview />} /> */}
+          <Route path="/flow-setup" element={<FlowSetup />} />
+          {/* <Route path="/linkge" element={<EmbedCode />} /> */}
+         
+
           {/* <Route path="/setup" element={<SetUp />} /> */}
           <Route path="/logout" element={<Logout />} />
         </Route>
@@ -39,7 +49,7 @@ function App() {
         {/* ✅ User routes WITHOUT sidebar/header */}
         {/* <Route path="/userchat" element={<UserChat />} /> */}
          <Route path="/usertest/:chatId" element={<UserMessage />} /> {/* Corrected path */}
-          
+           {/* <Route path="/embed" element={<ChatPreviewPage />} /> */}
       </Routes>
     </Router>
   );
