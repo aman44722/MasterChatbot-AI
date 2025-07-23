@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Box, Button, MenuItem, Select, IconButton } from "@mui/material";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
@@ -8,7 +8,7 @@ import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
 import LinkIcon from "@mui/icons-material/Link";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 
-const CustomTextEditor = () => {
+const CustomTextEditor = ({ value, onChange }) => {
   const editorRef = useRef(null);
   const [fontSize, setFontSize] = useState("16px");
 
@@ -27,12 +27,15 @@ const CustomTextEditor = () => {
   const embedYouTube = () => {
     const url = prompt("Enter YouTube video URL:");
     if (url) {
-      const embed = `<iframe width="100%" height="300" src="${url.replace("watch?v=", "embed/")}" frameborder="0" allowfullscreen></iframe>`;
+      const embed = `<iframe width="100%" height="300" src="${url.replace(
+        "watch?v=",
+        "embed/"
+      )}" frameborder="0" allowfullscreen></iframe>`;
       document.execCommand("insertHTML", false, embed);
     }
   };
 
- const handleFontSizeChange = (e) => {
+  const handleFontSizeChange = (e) => {
     setFontSize(e.target.value);
     applyCommand("fontSize", "7");
     const fonts = document.getElementsByTagName("font");
@@ -43,6 +46,13 @@ const CustomTextEditor = () => {
       }
     }
   };
+
+  // Update contentEditable when value changes externally
+  useEffect(() => {
+    if (editorRef.current && value !== editorRef.current.innerHTML) {
+      editorRef.current.innerHTML = value || "";
+    }
+  }, [value]);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -84,6 +94,7 @@ const CustomTextEditor = () => {
         ref={editorRef}
         contentEditable
         suppressContentEditableWarning
+        onInput={(e) => onChange(e.currentTarget.innerHTML)}
         sx={{
           minHeight: "150px",
           padding: "12px",
@@ -93,7 +104,7 @@ const CustomTextEditor = () => {
           fontSize,
         }}
       >
-        Type your question here...
+        {/* innerHTML will be handled by useEffect */}
       </Box>
     </Box>
   );

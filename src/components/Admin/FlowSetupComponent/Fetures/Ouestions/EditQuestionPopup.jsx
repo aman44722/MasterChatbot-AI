@@ -8,16 +8,26 @@ import {
   Switch,
   Tab,
   Tabs,
-  TextField,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import MediaTabComponent from "../../MediaUploadComponet/MediaTabComponent";
 import CustomTextEditor from "./CustomTextEditor";
-import MediaTabComponent from "./MediaUploadComponet/MediaTabComponent";
+import SingleChoiceTab from "./BasicTabs/SingleChoiceTab/SingleChoiceTab";
+import QuestionTab from "./BasicTabs/QuestionTab/QuestionTab";
+import NumberTab from "./BasicTabs/NumberTab/NumberTab";
 
-const EditQuestionPopup = ({ openEdit, handleCloseEdit, editingItem }) => {
+const EditQuestionPopup = ({
+  openEdit,
+  handleCloseEdit,
+  editingItem,
+  onUpdate,
+}) => {
   const [tabIndex, setTabIndex] = useState(0);
   const [text, setText] = useState("");
+  const [errorMessage, setErrorMessage] = useState(
+    "Please enter a valid answer"
+  );
 
   useEffect(() => {
     if (editingItem?.text) {
@@ -27,6 +37,21 @@ const EditQuestionPopup = ({ openEdit, handleCloseEdit, editingItem }) => {
 
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue);
+  };
+
+  const handleSave = () => {
+    if (text.trim() === "") {
+      setErrorMessage("Question cannot be empty");
+      return;
+    }
+
+    // Send updated question text to parent component
+    onUpdate({
+      ...editingItem,
+      text,
+    });
+
+    handleCloseEdit();
   };
 
   return (
@@ -50,27 +75,25 @@ const EditQuestionPopup = ({ openEdit, handleCloseEdit, editingItem }) => {
 
         {tabIndex === 0 && (
           <Box>
-            {/* Skip Toggle */}
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                mb: 2,
-                gap: 2,
-              }}
-            >
-              <Typography>Do Not Give Skip Option</Typography>
-              <Switch />
-            </Box>
-
-            {/* Min/Max Inputs */}
-            <Box sx={{ display: "flex", gap: 2 }}>
-              <TextField fullWidth label="Minimum Value" />
-              <TextField fullWidth label="Maximum Value" />
-            </Box>
+            {editingItem?.type === "question" ? (
+              <QuestionTab
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
+              />
+            ) : editingItem?.type === "single_choice" ? (
+              <SingleChoiceTab />
+            ) : editingItem?.type === "number" ? (
+              <NumberTab />
+            ) : (
+              <Box
+                sx={{ display: "flex", alignItems: "center", mb: 2, gap: 2 }}
+              >
+                <Typography>Do Not Give Skip Option</Typography>
+                <Switch />
+              </Box>
+            )}
           </Box>
         )}
-
         {tabIndex === 1 && <MediaTabComponent />}
         {tabIndex === 2 && (
           <Typography variant="body2">
@@ -81,13 +104,7 @@ const EditQuestionPopup = ({ openEdit, handleCloseEdit, editingItem }) => {
 
       <DialogActions>
         <Button onClick={handleCloseEdit}>Cancel</Button>
-        <Button
-          variant="contained"
-          onClick={() => {
-            console.log("Final Saved Text:", text);
-            handleCloseEdit();
-          }}
-        >
+        <Button variant="contained" onClick={handleSave}>
           Save
         </Button>
       </DialogActions>

@@ -1,42 +1,44 @@
 import React, { useState } from "react";
-import { useDrop } from "react-dnd";
+import { DndProvider, useDrop } from "react-dnd";
 import {
   Box,
   Typography,
   IconButton,
-  speedDialActionClasses,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
   TextField,
-  Tabs,
-  Tab,
   Switch,
+  Select,
+  MenuItem,
+  Button,
+  Dialog,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete"; // Import Delete Icon
-import CallSplitIcon from "@mui/icons-material/CallSplit"; // for Conditional Flow
-import ContentCopyIcon from "@mui/icons-material/ContentCopy"; // for Duplicate
 
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import { useSnackbar } from "notistack";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
-import EditIcon from "@mui/icons-material/Edit";
 import "./Style.css";
-import CustomTextEditor from "./CustomTextEditor";
-import MediaTabComponent from "./MediaUploadComponet/MediaTabComponent";
-import EditQuestionPopup from "./EditQuestionPopup";
+
+import EditQuestionPopup from "./Fetures/Ouestions/EditQuestionPopup";
+import BotPreviewDialogPopup from "./Fetures/Ouestions/BotPreviewDialogPopup";
+import QuestionDraggableItem from "./Fetures/Ouestions/QuestionDraggableItem";
 
 const FlowCanvasComponent = () => {
+  const { enqueueSnackbar } = useSnackbar();
+
   const [droppedItems, setDroppedItems] = useState([]);
-  const [editingItemId, setEditingItemId] = useState(null);
-  const [editingText, setEditingText] = useState("");
   const [openEdit, setOpenEdit] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
-  const [tabIndex, setTabIndex] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [language, setLanguage] = useState("en");
+  const [openPreview, setOpenPreview] = useState(false);
 
-  const [questionText, setQuestionText] = useState("");
+  const [botName, setBotName] = useState("Chatbot");
+  const [description, setDescription] = useState("Assistant");
+  const [welcomeText, setWelcomeText] = useState(
+    "Hi there! How can I help you?"
+  );
+  const [botLogo, setBotLogo] = useState(
+    "https://cdn-icons-png.flaticon.com/512/4712/4712035.png"
+  );
 
   const [{ isOver }, dropRef] = useDrop(() => ({
     accept: "COMPONENT",
@@ -46,34 +48,31 @@ const FlowCanvasComponent = () => {
         ...prev,
         { ...item, id: Date.now(), text: defaultText },
       ]);
+      enqueueSnackbar("Question added successfully", {
+        variant: "success",
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "right",
+        },
+      });
     },
-
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
   }));
 
-  //   handle edit
-  const handleEditClick = (item) => {
+  // 👉 Handle edit icon click
+  const handleEdit = (item) => {
     setEditingItem(item);
-    setEditingText(item.text);
     setOpenEdit(true);
   };
 
-  //   handle edit change
-  const handleEditChange = (e) => {
-    setEditingText(e.target.value);
-  };
-
-  //   handle edit save
-  const handleEditSave = () => {
-    setDroppedItems((prev) =>
-      prev.map((item) =>
-        item.id === editingItemId ? { ...item, text: editingText } : item
-      )
+  // ✅ Receive updated item from EditQuestionPopup and update droppedItems list
+  const handleUpdate = (updatedItem) => {
+    const updatedList = droppedItems.map((q) =>
+      q.id === updatedItem.id ? updatedItem : q
     );
-    setEditingItemId(null);
-    setEditingText("");
+    setDroppedItems(updatedList);
   };
 
   const handleCloseEdit = () => {
@@ -81,37 +80,41 @@ const FlowCanvasComponent = () => {
     setEditingItem(null);
   };
 
-  const handleTabChange = (event, newValue) => {
-    setTabIndex(newValue);
-  };
-
-  //   handle delete
   const handleDelete = (id) => {
     setDroppedItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  //   handle dublicate
   const handleDuplicate = (item) => {
     const newItem = {
       ...item,
-      id: Date.now(), // ensure unique ID
-      text: item.text + " (copy)", // optional
+      id: Date.now(),
+      text: item.text + " (copy)",
     };
     setDroppedItems((prev) => [...prev, newItem]);
+
+    enqueueSnackbar("Question has been duplicated successfully", {
+      variant: "success",
+      anchorOrigin: {
+        vertical: "top",
+        horizontal: "right",
+      },
+    });
   };
 
-  // handle conditional logic
   const handleConditionalFlow = (id) => {
-    // Logic to open conditional flow settings
     alert(`Setup conditional flow for item ID: ${id}`);
   };
+
+  const filteredItems = droppedItems.filter((item) =>
+    item.text.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <Box
       ref={dropRef}
       sx={{
         width: "70%",
-        minHeight: "100vh",
+        minHeight: "60vh",
         padding: "30px",
         backgroundColor: isOver ? "#F9FAFB" : "#fff",
         transition: "background 0.3s ease-in-out",
@@ -120,105 +123,102 @@ const FlowCanvasComponent = () => {
         gap: "15px",
       }}
     >
-      {droppedItems.length === 0 ? (
-        <Typography variant="h6" color="text.secondary">
-          Drag components here to build your flow
-        </Typography>
-      ) : (
-        droppedItems.map((item) => (
-          <Box
-            key={item.id}
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              flexDirection: "column",
-              alignItems: "end",
-              gap: "10px",
+      {/* Top Control Bar */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 2,
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <TextField
+          variant="outlined"
+          label="Search Questions"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            sx={{ width: 100, ml: 2, height: "38px", borderRadius: "8px" }}
+          >
+            <MenuItem value="en">English</MenuItem>
+            <MenuItem value="hi">Hindi</MenuItem>
+            <MenuItem value="es">Spanish</MenuItem>
+            <MenuItem value="fr">French</MenuItem>
+          </Select>
+
+          <Button
+            onClick={() => setOpenPreview(true)}
+            style={{
+              background: "#4F46E5",
+              color: "#fff",
+              padding: "10px 25px",
+              borderRadius: "8px",
+              border: "none",
+              alignSelf: "flex-start",
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 2,
-                border: "1px solid #E5E7EB",
-                padding: "0 16px ",
-                borderRadius: "10px",
-                width: "95%",
-                backgroundColor: "#F3F4F6",
-              }}
-            >
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <Box className="icon-size-custome" sx={{ fontSize: "10px" }}>
-                  {item.icon}
-                </Box>
-                {editingItemId === item.id ? (
-                  <input
-                    value={editingText}
-                    onChange={handleEditChange}
-                    onBlur={handleEditSave}
-                    autoFocus
-                    style={{
-                      fontSize: "16px",
-                      padding: "5px",
-                      borderRadius: "4px",
-                      border: "1px solid #ccc",
-                    }}
-                  />
-                ) : (
-                  <Typography>{item.text}</Typography>
-                )}
-              </Box>
+            Preview
+          </Button>
+        </Box>
+      </Box>
 
-              {/* icons  */}
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <IconButton onClick={() => handleEditClick(item)}>
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => handleDuplicate(item)}
-                  aria-label="duplicate"
-                >
-                  <ContentCopyIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => handleConditionalFlow(item.id)}
-                  aria-label="conditional flow"
-                >
-                  <CallSplitIcon />
-                </IconButton>
-                <IconButton onClick={() => handleDelete(item.id)}>
-                  <DeleteIcon />
-                </IconButton>
-              </Box>
-            </Box>
-
-            {/* Users replay  */}
-            <Box
-              sx={{
-                backgroundColor: "#3b82f6",
-                color: "#fff",
-                padding: "6px 14px",
-                borderRadius: "6px",
-                fontWeight: 500,
-                fontSize: "14px",
+      {/* Drop Area Content */}
+      {filteredItems.length === 0 ? (
+        <Typography variant="h6" color="text.secondary" textAlign="center">
+          {droppedItems.length === 0
+            ? "Drag components here to build your flow"
+            : "Data not found!"}
+        </Typography>
+      ) : (
+        <DndProvider backend={HTML5Backend}>
+          {filteredItems.map((item, index) => (
+            <QuestionDraggableItem
+              key={item.id}
+              index={index}
+              item={item}
+              moveItem={(from, to) => {
+                const updated = [...droppedItems];
+                const [moved] = updated.splice(from, 1);
+                updated.splice(to, 0, moved);
+                setDroppedItems(updated);
               }}
-            >
-              User's reply
-            </Box>
-          </Box>
-        ))
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              onDuplicate={handleDuplicate}
+              onConditional={handleConditionalFlow}
+            />
+          ))}
+        </DndProvider>
       )}
 
+      {/* Edit Popup */}
+      {openEdit && editingItem && (
         <EditQuestionPopup
-        openEdit={openEdit}
-        handleCloseEdit={handleCloseEdit}
-        editingItem={editingItem}
+          openEdit={openEdit}
+          handleCloseEdit={handleCloseEdit}
+          editingItem={editingItem}
+          onUpdate={handleUpdate} // 👈 pass the update handler
+        />
+      )}
+
+      {/* Bot Preview */}
+      <BotPreviewDialogPopup
+        open={openPreview}
+        onClose={() => setOpenPreview(false)}
+        droppedItems={droppedItems}
+        botName={botName}
+        description={description}
+        welcomeText={welcomeText}
+        botAvatar={botLogo}
+        onUpdate={handleUpdate}
       />
     </Box>
-
-    // hdgsuyghushdjhasjgyashdjhagyusgdh
   );
 };
 

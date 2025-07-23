@@ -5,13 +5,20 @@ import FlowSidebarComponent from '../../components/Admin/FlowSetupComponent/Flow
 import FlowCanvasComponent from '../../components/Admin/FlowSetupComponent/FlowCanvasComponent'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { SnackbarProvider } from "notistack";
 
 const FlowSetup = () => {
    return (
       <DndProvider backend={HTML5Backend}>
          <Box sx={{ display: 'flex', marginTop: '5%' }}>
             <FlowSidebarComponent />
-            <FlowCanvasComponent />
+            <SnackbarProvider
+               maxSnack={3}
+               anchorOrigin={{ vertical: "top", horizontal: "right" }}
+               autoHideDuration={3000}
+            >
+               <FlowCanvasComponent />
+            </SnackbarProvider>
          </Box>
       </DndProvider>
 

@@ -70,6 +70,7 @@ const componentItems = [
     label: "Question",
     defaultLabel: "What is your name?",
     icon: <QuestionMarkIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "question",
   },
   {
     label: (
@@ -77,8 +78,9 @@ const componentItems = [
         Single<br />Choice
       </>
     ),
-    defaultLabel: "Select one option",
+    defaultLabel: "What is your gender?",
     icon: <DoneOutlineIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+     type: "single_choice",
   },
   {
     label: "Email",
@@ -107,6 +109,7 @@ const componentItems = [
     label: "Number",
     defaultLabel: "Enter a number",
     icon: <TagIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "number",
   },
   {
     label: "Rating",
