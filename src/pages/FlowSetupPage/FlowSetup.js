@@ -10,7 +10,7 @@ import { SnackbarProvider } from "notistack";
 const FlowSetup = () => {
    return (
       <DndProvider backend={HTML5Backend}>
-         <Box sx={{ display: 'flex', marginTop: '5%' }}>
+         <Box sx={{ display: 'flex', }}>
             <FlowSidebarComponent />
             <SnackbarProvider
                maxSnack={3}

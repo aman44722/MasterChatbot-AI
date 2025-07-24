@@ -47,17 +47,17 @@ const SetUp = () => {
   }, [dispatch]);
 
   const botSettings = useSelector((state) => state.botSettings);
-    const handleSave = () => {
+  const handleSave = () => {
     localStorage.setItem('botSettings', JSON.stringify(botSettings));
     alert('Settings saved!');
   };
-    const handleReset = () => {
+  const handleReset = () => {
     localStorage.removeItem('botSettings');
     dispatch(resetSettings());
     alert('Settings reset to default!');
   };
-    return (
-    <Box style={{ display: 'flex', height: '84vh', marginTop: '5%', padding: '10px', width: '100%' }}>
+  return (
+    <Box style={{ display: 'flex', height: '84vh', padding: '10px', width: '100%' }}>
       {/* Left Panel */}
       <Box
         className="custom-scrollbar"
@@ -72,7 +72,7 @@ const SetUp = () => {
       >
         {/* Tab Navigation */}
         <div style={{ position: 'sticky', top: 0, background: '#fff', padding: '16px 20px', zIndex: 9 }}>
-          <div style={{ display: 'flex', justifyContent:'center',alignItems:'center', gap: '10px', overflowX:'scroll' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', overflowX: 'scroll' }}>
             {['text', 'logo', 'layout', 'themes'].map(tab => (
               <button
                 key={tab}
@@ -86,7 +86,7 @@ const SetUp = () => {
                   fontWeight: activeTab === tab ? '600' : '500',
                   color: activeTab === tab ? '#333' : '#777',
                   cursor: 'pointer',
-                  margin:activeTab === tab ? '2px 0px':""
+                  margin: activeTab === tab ? '2px 0px' : ""
                 }}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}

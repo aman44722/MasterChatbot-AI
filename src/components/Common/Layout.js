@@ -15,7 +15,7 @@ const Layout = () => {
       {!isUserPage && <Sidebar />}
       <div style={{ flex: 1 }}>
         {!isUserPage && <Header />}
-        <main style={{ padding: '20px' }}>
+        <main style={{ padding: '80px' }}>
           <Outlet /> {/* This will render the child routes like /chats, /dashboard */}
         </main>
       </div>
