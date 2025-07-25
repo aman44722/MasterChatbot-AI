@@ -1,12 +1,5 @@
 import React, { useState } from "react";
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from "firebase/auth";
-import { auth } from "../firebase/firebaseConfig"; // Adjust path as needed
-import { useNavigate } from "react-router-dom";
-
-import {
   Box,
   Button,
   Container,
@@ -15,85 +8,130 @@ import {
   Paper,
   IconButton,
   InputAdornment,
+  MenuItem,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+
+const countryCodes = [
+  { code: "+91", label: "🇮🇳 India" },
+  { code: "+1", label: "🇺🇸 USA" },
+];
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+
   const [formData, setFormData] = useState({
-    name: "",
+    fullName: "",
     email: "",
     password: "",
+    phone: "",
+    website: "",
+    countryCode: "+91",
+    termsAgreed: false,
   });
-  const navigate = useNavigate();
 
-  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
 
   const toggleMode = () => {
     setIsLogin((prev) => !prev);
-    setFormData({ name: "", email: "", password: "" });
-  };
-
-  const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setError("");
+    setFormData({
+      fullName: "",
+      email: "",
+      password: "",
+      phone: "",
+      website: "",
+      countryCode: "+91",
+      termsAgreed: false,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+
+    const payload = {
+      email: formData.email,
+      password: formData.password,
+    };
+
+    if (!isLogin) {
+      if (!formData.termsAgreed) {
+        setError("You must agree to Terms & Conditions.");
+        return;
+      }
+
+      Object.assign(payload, {
+        fullName: formData.fullName, // not 'name'
+        website: formData.website,
+        phone: `${formData.countryCode}${formData.phone}`,
+        countryCode: formData.countryCode,
+        termsAccepted: formData.termsAgreed, // backend expects 'termsAccepted'
+      });
+    }
 
     try {
+      const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
+      const response = await axios.post(endpoint, payload);
+
+      alert(`${isLogin ? "Login" : "Registration"} successful!`);
+      localStorage.setItem("userId", response.data.user._id);
+
       if (isLogin) {
-        await signInWithEmailAndPassword(
-          auth,
-          formData.email,
-          formData.password
-        );
-        alert("Login successful!");
-        navigate("/"); // ✅ Go to dashboard after login
+        login(response.data);
+        navigate("/");
       } else {
-        await createUserWithEmailAndPassword(
-          auth,
-          formData.email,
-          formData.password
-        );
-        alert("Registration successful!");
-        navigate("/"); // ✅ Go to dashboard after register
+        login(response.data); // ✅ now saving after register too
+        navigate("/"); // ✅ same redirect as login
       }
-    } catch (error) {
-      alert("Error: " + error.message);
+    } catch (err) {
+      setError(err?.response?.data?.message || "An error occurred");
     }
   };
 
   return (
     <Container maxWidth="xs">
-      <Paper elevation={4} sx={{ padding: 4, mt: 10, borderRadius: 3 }}>
-        <Typography variant="h5" align="center" fontWeight={600} mb={3}>
-          {isLogin ? "Login to Your Account" : "Create a New Account"}
+      <Paper elevation={4} sx={{ padding: 4, mt: 8, borderRadius: 3 }}>
+        <Typography
+          variant="h6"
+          align="center"
+          color="primary"
+          fontWeight={600}
+        >
+          {isLogin ? "Welcome Back" : "Sign Up for a 14-Day Free Trial."}
+        </Typography>
+        <Typography align="center" mt={1} mb={2} color="text.secondary">
+          {isLogin ? "Please login to continue accessing your dashboard." : ""}
         </Typography>
 
         <form onSubmit={handleSubmit}>
-          {!isLogin && (
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Full Name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-          )}
           <TextField
             fullWidth
             margin="normal"
-            label="Email"
-            type="email"
+            label="Company Email Address"
             name="email"
+            type="email"
             value={formData.email}
             onChange={handleChange}
             required
           />
+
           <TextField
             fullWidth
             margin="normal"
@@ -106,10 +144,7 @@ const AuthForm = () => {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    edge="end"
-                  >
+                  <IconButton onClick={() => setShowPassword((prev) => !prev)}>
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
@@ -117,26 +152,135 @@ const AuthForm = () => {
             }}
           />
 
+          {!isLogin && (
+            <>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 1 }}>
+                {[
+                  "8 Char",
+                  "1 Lowercase",
+                  "1 Uppercase",
+                  "1 Special Char",
+                  "1 Num",
+                ].map((item, i) => (
+                  <Box
+                    key={i}
+                    sx={{
+                      fontSize: "12px",
+                      background: "#e0e0e0",
+                      px: 1,
+                      py: 0.5,
+                      borderRadius: "4px",
+                    }}
+                  >
+                    {item}
+                  </Box>
+                ))}
+              </Box>
+
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Website URL"
+                name="website"
+                value={formData.website}
+                onChange={handleChange}
+                required
+              />
+
+              <TextField
+                fullWidth
+                margin="normal"
+                label="Full Name"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                required
+              />
+
+              <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
+                <TextField
+                  select
+                  label="Country"
+                  value={formData.countryCode}
+                  name="countryCode"
+                  onChange={handleChange}
+                  sx={{ width: "30%" }}
+                >
+                  {countryCodes.map((option) => (
+                    <MenuItem key={option.code} value={option.code}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+
+                <TextField
+                  fullWidth
+                  label="WhatsApp / Phone Number"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                />
+              </Box>
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="termsAgreed"
+                    checked={formData.termsAgreed}
+                    onChange={handleChange}
+                    required
+                  />
+                }
+                label={
+                  <Typography variant="body2">
+                    I agree to{" "}
+                    <a href="/terms" target="_blank" rel="noreferrer">
+                      Terms & Conditions
+                    </a>{" "}
+                    and{" "}
+                    <a href="/privacy" target="_blank" rel="noreferrer">
+                      Privacy Policy
+                    </a>
+                    .
+                  </Typography>
+                }
+              />
+            </>
+          )}
+
+          {error && (
+            <Typography color="error" align="center" mt={1}>
+              {error}
+            </Typography>
+          )}
+
           <Button
             type="submit"
             variant="contained"
             fullWidth
-            sx={{ mt: 3, py: 1.3 }}
+            sx={{ mt: 2, py: 1.2 }}
           >
-            {isLogin ? "Login" : "Register"}
+            {isLogin ? "Login To Dashboard" : "Send Code Via Email"}
           </Button>
         </form>
 
-        <Typography
-          variant="body2"
-          align="center"
-          mt={2}
-          color="text.secondary"
-        >
-          {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-          <Button variant="text" onClick={toggleMode}>
-            {isLogin ? "Register here" : "Login"}
-          </Button>
+        <Typography align="center" mt={2}>
+          {isLogin ? (
+            <>
+              Don't have an account?{" "}
+              <Button variant="text" onClick={toggleMode}>
+                Sign Up
+              </Button>
+            </>
+          ) : (
+            <>
+              Already have an account?{" "}
+              <Button variant="text" onClick={toggleMode}>
+                Login
+              </Button>
+            </>
+          )}
         </Typography>
       </Paper>
     </Container>

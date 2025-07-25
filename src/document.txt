@@ -1,0 +1,20 @@
+| Feature                      | Endpoint                             | HTTP Method | Description                                     |
+| ---------------------------- | ------------------------------------ | ----------- | ----------------------------------------------- |
+| **Admin Registration**       | `/api/auth/register`                 | `POST`      | Register a new admin                            |
+| **Admin Login**              | `/api/auth/login`                    | `POST`      | Admin login                                     |
+| **Admin Logout**             | `/api/auth/logout`                   | `POST`      | Admin logout                                    |
+| **View Admin Profile**       | `/api/admin/profile`                 | `GET`       | View the admin's profile                        |
+| **Update Admin Profile**     | `/api/admin/profile`                 | `PUT`       | Update admin's profile                          |
+| **Change Admin Password**    | `/api/admin/change-password`         | `POST`      | Change the admin's password                     |
+| **Delete Admin Account**     | `/api/admin/delete-account`          | `DELETE`    | Delete admin account                            |
+| **Get Active Chats**         | `/api/chat/active`                   | `GET`       | Get active chats between users and chatbot      |
+| **Send Message to User**     | `/api/chat/message`                  | `POST`      | Send a message to a user from the admin         |
+| **Get Chat History**         | `/api/chat/history/{chatId}`         | `GET`       | View the chat history for a specific chat       |
+| **View User Profile**        | `/api/users/{id}`                    | `GET`       | View details of a specific user                 |
+| **Update User Profile**      | `/api/users/{id}`                    | `PUT`       | Update user details                             |
+| **Block User**               | `/api/users/{id}/block`              | `POST`      | Block a user                                    |
+| **Unblock User**             | `/api/users/{id}/unblock`            | `POST`      | Unblock a user                                  |
+| **View Chatbot Performance** | `/api/analytics/chatbot-performance` | `GET`       | View performance data of the chatbot            |
+| **View User Activity**       | `/api/analytics/user-activity`       | `GET`       | View activity of users interacting with chatbot |
+| **Get System Logs**          | `/api/logs`                          | `GET`       | Get logs from the system                        |
+| **Report System Error**      | `/api/report-error`                  | `POST`      | Report any errors encountered in the system     |
