@@ -35,7 +35,6 @@ const Header = () => {
         console.error("Error fetching user:", error);
       }
     };
-
     fetchUser();
   }, []);
 
@@ -119,22 +118,22 @@ const Header = () => {
               </MenuItem>
 
               {/* Account and Plan */}
-              <MenuItem disabled>
+              <MenuItem >
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
                   Account
                 </Typography>
               </MenuItem>
-              <MenuItem disabled>
+              <MenuItem >
                 <Typography variant="body2">
                   Billing
                 </Typography>
               </MenuItem>
-              <MenuItem disabled>
+              <MenuItem >
                 <Typography variant="body2">
                   Help
                 </Typography>
               </MenuItem>
-              <MenuItem disabled>
+              <MenuItem >
                 <Typography variant="body2">
                   Video Guide
                 </Typography>

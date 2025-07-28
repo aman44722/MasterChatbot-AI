@@ -16,6 +16,7 @@ import SetUp from './pages/SetupPage/SetUp';
 import FlowSetup from './pages/FlowSetupPage/FlowSetup';
 import AuthForm from './components/LoginRegister';
 import PrivateRoute from './PrivateRoute/PrivateRoute';
+import Account from './pages/Account';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="setup" element={<SetUp />} />
           <Route path="flow-setup" element={<FlowSetup />} />
           <Route path="logout" element={<Logout />} />
+          <Route path="account" element={<Account />} />
         </Route>
       </Route>
 
