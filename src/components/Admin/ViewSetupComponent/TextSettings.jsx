@@ -1,27 +1,27 @@
-import React from 'react';
+import React from "react";
 
 const labelStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  fontSize: '13px',
-  color: '#999',
-  marginBottom: '6px',
-  gap: '4px',
+  display: "flex",
+  alignItems: "center",
+  fontSize: "13px",
+  color: "#999",
+  marginBottom: "6px",
+  gap: "4px",
   fontWeight: 600,
 };
 
 const inputStyle = {
-  width: '100%',
-  padding: '10px 12px',
-  border: '1px solid #ddd',
-  borderRadius: '8px',
-  fontSize: '14px',
-  outline: 'none',
-  boxSizing: 'border-box',
+  width: "100%",
+  padding: "10px 12px",
+  border: "1px solid #ddd",
+  borderRadius: "8px",
+  fontSize: "14px",
+  outline: "none",
+  boxSizing: "border-box",
 };
 
 const InfoIcon = () => (
-  <span style={{ fontSize: '12px', color: '#aaa', cursor: 'help' }}>ⓘ</span>
+  <span style={{ fontSize: "12px", color: "#aaa", cursor: "help" }}>ⓘ</span>
 );
 
 const TextSettings = ({
@@ -34,10 +34,17 @@ const TextSettings = ({
   font,
   setFont,
   fontSize,
-  setFontSize
+  setFontSize,
 }) => {
   return (
-    <div style={{ marginTop: '40px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div
+      style={{
+        marginTop: "40px",
+        display: "flex",
+        flexDirection: "column",
+        gap: "20px",
+      }}
+    >
       {/* Bot Name */}
       <div>
         <label style={labelStyle}>
@@ -78,7 +85,7 @@ const TextSettings = ({
       </div>
 
       {/* Font and Font Size */}
-      <div style={{ display: 'flex', gap: '10px' }}>
+      <div style={{ display: "flex", gap: "10px" }}>
         <div style={{ flex: 1 }}>
           <label style={labelStyle}>Choose a Font</label>
           <input

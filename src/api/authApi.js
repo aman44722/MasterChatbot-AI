@@ -1,8 +1,6 @@
 import axios from "axios";
 
-const API_URL = process.env.REACT_APP_AUTH_API;
-console.log("api is not working", API_URL);
-
+const API_URL = "http://localhost:5000/api/auth";
 
 // Register User
 export const registerUser = async (payload) => {

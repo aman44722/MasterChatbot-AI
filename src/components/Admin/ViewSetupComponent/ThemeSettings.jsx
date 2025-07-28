@@ -294,7 +294,9 @@ const ThemeSettings = ({
             display: "grid",
             gridTemplateColumns: "repeat(5, 1fr)",
             gap: "10px",
-            marginTop: "20px",height: '50vh', overflowY: 'scroll'
+            marginTop: "20px",
+            height: "50vh",
+            overflowY: "scroll",
           }}
         >
           {gradientPresets.map((gradient, idx) => (
@@ -344,7 +346,11 @@ const ThemeSettings = ({
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "10px",height: '30vh', overflowY: 'scroll', overflowX: 'hidden', scrollbarWidth: 'thin'
+              gap: "10px",
+              height: "30vh",
+              overflowY: "scroll",
+              overflowX: "hidden",
+              scrollbarWidth: "thin",
             }}
           >
             {backgroundImages.map((img, idx) => (
@@ -409,9 +415,10 @@ const ThemeSettings = ({
             >
               Upload Image
             </button>
-            <p style={{ fontSize: '12px', color: '#888', marginTop: '5px' }}>
-                          File Size should be less than 5 MB <br /> <span> Image Must Be 380*585 </span>
-                        </p>
+            <p style={{ fontSize: "12px", color: "#888", marginTop: "5px" }}>
+              File Size should be less than 5 MB <br />{" "}
+              <span> Image Must Be 380*585 </span>
+            </p>
             <input
               ref={fileInputRef}
               type="file"
