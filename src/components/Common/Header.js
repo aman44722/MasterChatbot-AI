@@ -47,8 +47,7 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
+    localStorage.clear();
     navigate("/login");
   };
 

@@ -9,7 +9,7 @@ import ThemeSettings from '../../components/Admin/ViewSetupComponent/ThemeSettin
 import ChatPreview from '../../components/Admin/ViewSetupComponent/ChatPreview';
 import { resetSettings, updateSetting } from '../../redux/botSettingsSlice';
 import axios from "axios";
-import { EditChatBotSettings } from '../../api/authApi';
+import { EditChatBotSettings, fetchUserById } from '../../api/authApi';
 
 
 const SetUp = () => {
@@ -36,64 +36,53 @@ const SetUp = () => {
   const [isHeaderExpanded, setIsHeaderExpanded] = useState(false);
 
 
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem('botSettings'));
-    if (saved) {
-      dispatch(updateSetting(saved));
+  // useEffect(() => {
+  //   const saved = JSON.parse(localStorage.getItem('botSettings'));
+  //   if (saved) {
+  //     dispatch(updateSetting(saved));
+  //   }
+  // }, [dispatch]);
+
+ useEffect(() => {
+  const fetchSettings = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const userId = localStorage.getItem("userId");
+      // console.log("userData - ",user);
+      if (user && userId) {
+        const userData = await fetchUserById(userId);
+        console.log("userData - ",userData);      
+        
+        if (userData?.botSettings) {
+          dispatch(updateSetting(userData.botSettings));
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch bot settings:", err);
     }
-  }, [dispatch]);
+  };
+
+  fetchSettings();
+}, [dispatch]);
 
   const botSettings = useSelector((state) => state.botSettings);
   
-  // const handleSave = () => {
-  //   localStorage.setItem('botSettings', JSON.stringify(botSettings));
-  //   alert('Settings saved!');
-  //   console.log("Bot Setting Saved");
-    
-  // };
+  const handleSave = async () => {
+    // localStorage.setItem('botSettings', JSON.stringify(botSettings));
+    // alert('Settings saved!');
+    console.log("Bot Setting Saved");
 
-//   const handleSave = async () => {
-//   localStorage.setItem('botSettings', JSON.stringify(botSettings));
-//   alert('Settings saved!');
-//   console.log("Bot Setting Saved");
-
-//   try {
-//     const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODg3MWEwMjIxNWEzMmRlODk2OTg1ODAiLCJpYXQiOjE3NTM2ODc1NzcsImV4cCI6MTc1NDI5MjM3N30._b4yaq_gM3q51wuav4GBfi-Ov5wboUuVlmHsp9MDuqI';
-
-//     const response = await axios.put(
-//       'http://localhost:5000/api/auth/user/68871a02215a32de89698580/layout-settings',
-//       { botSettings }, // 👈 wrapped inside an object as shown in your sample payload
-//       {
-//         headers: {
-//           'Authorization': `Bearer ${token}`,
-//           'Content-Type': 'application/json'
-//         }
-//       }
-//     );
-
-//     console.log('Server response:', response.data);
-//     alert('Settings saved to backend successfully!');
-//   } catch (error) {
-//     console.error('Failed to save settings to backend:', error.response?.data || error.message);
-//     alert('Failed to save settings to server.');
-//   }
-// };
-const handleSave = async () => {
-  localStorage.setItem('botSettings', JSON.stringify(botSettings));
-  alert('Settings saved!');
-  console.log("Bot Setting Saved");
-
-  try {
-    await EditChatBotSettings(botSettings);
-    alert('Bot settings updated on server!');
-  } catch (error) {
-    console.error('Error updating settings:', error);
-    alert('Failed to update settings on server.');
-  }
-};
+    try {
+      await EditChatBotSettings(botSettings);
+      alert('Bot settings updated on server!');
+    } catch (error) {
+      console.error('Error updating settings:', error);
+      alert('Failed to update settings on server.');
+    }
+  };
 
   const handleReset = () => {
-    localStorage.removeItem('botSettings');
+    // localStorage.removeItem('botSettings');
     dispatch(resetSettings());
     alert('Settings reset to default!');
   };
