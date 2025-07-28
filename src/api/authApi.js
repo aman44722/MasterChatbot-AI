@@ -34,29 +34,29 @@ export const fetchUserById = async (userId) => {
 
 // Update Bot Settings (PUT method using localStorage for token & userId)
 export const EditChatBotSettings = async (payload) => {
-  try {
-    const userID = localStorage.getItem("userId");
-    const token = JSON.parse(localStorage.getItem("user"))?.token;
+    try {
+        const userID = localStorage.getItem("userId");
+        const token = JSON.parse(localStorage.getItem("user"))?.token;
 
-    if (!userID || !token) {
-      throw new Error("Missing userId or token in localStorage");
+        if (!userID || !token) {
+            throw new Error("Missing userId or token in localStorage");
+        }
+
+        const response = await axios.put(
+            `${API_URL}/user/${userID}/layout-settings`,
+            { botSettings: payload },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        throw error.response?.data?.message || "Failed to update bot settings";
     }
-
-    const response = await axios.put(
-      `${API_URL}/user/${userID}/layout-settings`,
-      { botSettings: payload },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    return response.data;
-  } catch (error) {
-    throw error.response?.data?.message || "Failed to update bot settings";
-  }
 };
 
 
