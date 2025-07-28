@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './AdminSettings.css';
 import { Box } from '@mui/material';
-
 import { useSelector, useDispatch } from 'react-redux';
-
-
-
 import TextSettings from '../../components/Admin/ViewSetupComponent/TextSettings';
 import LogoSettings from '../../components/Admin/ViewSetupComponent/LogoSettings';
 import LayoutSettings from '../../components/Admin/ViewSetupComponent/LayoutSettings';
 import ThemeSettings from '../../components/Admin/ViewSetupComponent/ThemeSettings';
 import ChatPreview from '../../components/Admin/ViewSetupComponent/ChatPreview';
 import { resetSettings, updateSetting } from '../../redux/botSettingsSlice';
+import axios from "axios";
+import { EditChatBotSettings } from '../../api/authApi';
+
 
 const SetUp = () => {
   const dispatch = useDispatch();
@@ -32,8 +31,6 @@ const SetUp = () => {
     chatColor,
     uploadedImage
   } = useSelector((state) => state.botSettings);
-
-
   const [activeTab, setActiveTab] = useState('text');
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isHeaderExpanded, setIsHeaderExpanded] = useState(false);
@@ -47,10 +44,54 @@ const SetUp = () => {
   }, [dispatch]);
 
   const botSettings = useSelector((state) => state.botSettings);
-  const handleSave = () => {
-    localStorage.setItem('botSettings', JSON.stringify(botSettings));
-    alert('Settings saved!');
-  };
+  
+  // const handleSave = () => {
+  //   localStorage.setItem('botSettings', JSON.stringify(botSettings));
+  //   alert('Settings saved!');
+  //   console.log("Bot Setting Saved");
+    
+  // };
+
+//   const handleSave = async () => {
+//   localStorage.setItem('botSettings', JSON.stringify(botSettings));
+//   alert('Settings saved!');
+//   console.log("Bot Setting Saved");
+
+//   try {
+//     const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODg3MWEwMjIxNWEzMmRlODk2OTg1ODAiLCJpYXQiOjE3NTM2ODc1NzcsImV4cCI6MTc1NDI5MjM3N30._b4yaq_gM3q51wuav4GBfi-Ov5wboUuVlmHsp9MDuqI';
+
+//     const response = await axios.put(
+//       'http://localhost:5000/api/auth/user/68871a02215a32de89698580/layout-settings',
+//       { botSettings }, // 👈 wrapped inside an object as shown in your sample payload
+//       {
+//         headers: {
+//           'Authorization': `Bearer ${token}`,
+//           'Content-Type': 'application/json'
+//         }
+//       }
+//     );
+
+//     console.log('Server response:', response.data);
+//     alert('Settings saved to backend successfully!');
+//   } catch (error) {
+//     console.error('Failed to save settings to backend:', error.response?.data || error.message);
+//     alert('Failed to save settings to server.');
+//   }
+// };
+const handleSave = async () => {
+  localStorage.setItem('botSettings', JSON.stringify(botSettings));
+  alert('Settings saved!');
+  console.log("Bot Setting Saved");
+
+  try {
+    await EditChatBotSettings(botSettings);
+    alert('Bot settings updated on server!');
+  } catch (error) {
+    console.error('Error updating settings:', error);
+    alert('Failed to update settings on server.');
+  }
+};
+
   const handleReset = () => {
     localStorage.removeItem('botSettings');
     dispatch(resetSettings());
