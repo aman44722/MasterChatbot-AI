@@ -8,7 +8,7 @@ const ThemeTab = () => {
 
   const handleSave = () => {
     // Save the theme settings (you can connect this with your backend)
-    console.log('Theme Saved:', { backgroundColor, textColor });
+    // console.log('Theme Saved:', { backgroundColor, textColor });
   };
 
   return (

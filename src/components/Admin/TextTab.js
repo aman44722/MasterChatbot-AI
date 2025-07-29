@@ -9,7 +9,7 @@ const TextTab = () => {
 
   const handleSave = () => {
     // Save the settings (you can connect this with your backend)
-    console.log('Settings Saved:', { botName, welcomeText, fontSize });
+    // console.log('Settings Saved:', { botName, welcomeText, fontSize });
   };
 
   return (

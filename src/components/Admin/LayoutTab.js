@@ -8,7 +8,7 @@ const LayoutTab = () => {
 
   const handleSave = () => {
     // Save the layout settings (you can connect this with your backend)
-    console.log('Layout Saved:', { chatWidth, chatHeight });
+    // console.log('Layout Saved:', { chatWidth, chatHeight });
   };
 
   return (

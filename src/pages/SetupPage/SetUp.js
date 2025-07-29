@@ -51,7 +51,7 @@ const SetUp = () => {
         // console.log("userData - ",user);
         if (user && userId) {
           const userData = await fetchUserById(userId);
-          console.log("userData - ", userData);
+          // console.log("userData - ", userData);
 
           if (userData?.botSettings) {
             dispatch(updateSetting(userData.botSettings));
@@ -70,7 +70,7 @@ const SetUp = () => {
   const handleSave = async () => {
     // localStorage.setItem('botSettings', JSON.stringify(botSettings));
     // alert('Settings saved!');
-    console.log("Bot Setting Saved");
+    // console.log("Bot Setting Saved");
 
     try {
       await EditChatBotSettings(botSettings);
