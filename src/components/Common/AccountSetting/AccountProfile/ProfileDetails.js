@@ -90,18 +90,18 @@ export default function ProfileDetails() {
                     </div>
                     <div>
                         <label style={labelStyle} htmlFor="website">Website URL</label>
-                        <input style={inputStyle} type="text" id="website" value={user.website} onChange={(e) => setUser({ ...user, website: e.target.value })}/>
+                        <input style={inputStyle} type="text" id="website" value={user.website} onChange={(e) => setUser({ ...user, website: e.target.value })} />
                     </div>
                     <div>
                         <label style={labelStyle} htmlFor="phone">Phone Number</label>
-                        <input style={inputStyle} type="tel" id="phone" value={user.phone}  onChange={(e) => setUser({ ...user, phone: e.target.value })}/>
+                        <input style={inputStyle} type="tel" id="phone" value={user.phone} onChange={(e) => setUser({ ...user, phone: e.target.value })} />
                     </div>
                     <div>
                         <label style={labelStyle} htmlFor="gst">GST Number</label>
-                        <input style={inputStyle} type="text" id="gst" value={user.gst} onChange={(e) => setUser({ ...user, gst: e.target.value })}/>
+                        <input style={inputStyle} type="text" id="gst" value={user.gst} onChange={(e) => setUser({ ...user, gst: e.target.value })} />
                     </div>
                     <button onClick={handleUpdate} style={{ background: '#4F46E5', color: '#fff', padding: '10px 25px', borderRadius: '8px', border: 'none' }} type="button">Update</button>
-                    
+
                     {/* <button style={{ background: '#4F46E5', color: '#fff', padding: '10px 25px', borderRadius: '8px', border: 'none' }} type="button">Save</button> */}
                 </div>
             )}

@@ -126,6 +126,7 @@ const QuestionDraggableItem = ({
               width: "95%",
             }}
           >
+            {/* Typography */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <Box className="icon-size-custome" sx={{ fontSize: "10px" }}>
                 {item.icon}
@@ -136,6 +137,7 @@ const QuestionDraggableItem = ({
               />
             </Box>
 
+            {/* Icon  */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <IconButton onClick={() => onEdit(item)}>
                 <EditIcon />
@@ -151,6 +153,7 @@ const QuestionDraggableItem = ({
               </IconButton>
             </Box>
 
+            {/* Drag Progress Bar */}
             {isHovering && (
               <LinearProgress
                 variant="determinate"
@@ -167,6 +170,8 @@ const QuestionDraggableItem = ({
             )}
           </Box>
         </Box>
+
+        {/* User Reply Static */}
         <Box
           sx={{
             backgroundColor: "#3b82f6",
@@ -181,6 +186,7 @@ const QuestionDraggableItem = ({
         </Box>
       </Box>
 
+      {/* Delet Dialog */}
       <Dialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}

@@ -165,6 +165,18 @@ const FlowCanvasComponent = () => {
           >
             Preview
           </Button>
+          <Button
+            style={{
+              background: "#4F46E5",
+              color: "#fff",
+              padding: "10px 25px",
+              borderRadius: "8px",
+              border: "none",
+              alignSelf: "flex-start",
+            }}
+          >
+            Save
+          </Button>
         </Box>
       </Box>
 
