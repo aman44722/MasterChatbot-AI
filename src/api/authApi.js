@@ -48,7 +48,7 @@ export const EditChatBotSettings = async (payload) => {
         if (!userID || !token) {
             throw new Error("Missing userId or token in localStorage");
         }
-        console.log('userID', userID);
+        
 
         const response = await axios.put(
             `${API_URL}/user/${userID}/layout-settings`,

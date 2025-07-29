@@ -81,7 +81,9 @@ const Header = () => {
                 fontWeight: 600,
               }}
             >
+              <MenuItem component={Link} to="/account">
               {user.fullName?.charAt(0).toUpperCase() || 'A'}
+              </MenuItem>
             </Avatar>
             <Box sx={{ lineHeight: 1 }}>
               <Typography fontWeight={600} fontSize="14px" color="#fff">

@@ -14,7 +14,7 @@ const LogoTab = () => {
 
   const handleSave = () => {
     // Save the settings (you can connect this with your backend)
-    console.log('Logo Saved:', logo);
+    // console.log('Logo Saved:', logo);
   };
 
   return (

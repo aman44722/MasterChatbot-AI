@@ -13,7 +13,7 @@ const menuItems = [
     { text: 'Delete Account', icon: <Delete /> },
 ];
 
-export default function AccountSettingSidebar({ selected, setSelected }) {
+export default function AccountSettingSidebar({ setSelected }) {
     return (
         <Box
             className="custom-scrollbar"
@@ -30,7 +30,7 @@ export default function AccountSettingSidebar({ selected, setSelected }) {
                 <ListItem
                     button
                     key={item.text}
-                    selected={selected === item.text}
+                    // selected={selected === item.text}
                     onClick={() => setSelected(item.text)}
                 >
                     <ListItemIcon>{item.icon}</ListItemIcon>

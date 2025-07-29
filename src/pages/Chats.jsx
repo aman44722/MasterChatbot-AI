@@ -38,12 +38,12 @@ import userImg from "../assets/images/randonImg/user-2.jpg";
 
 const Chats = () => {
   const [sessions, setSessions] = useState([]);
-  console.log("sessions - ",sessions);
+  // console.log("sessions - ",sessions);
   
   const [selectedSession, setSelectedSession] = useState(null);
-  console.log("selectedSession - ",selectedSession);  
+  // console.log("selectedSession - ",selectedSession);  
   const [messages, setMessages] = useState([]);
-  console.log("messages -",messages);
+  // console.log("messages -",messages);
   
   const [newMessage, setNewMessage] = useState("");
   const [anchorEl, setAnchorEl] = useState(null); // State to handle menu opening
@@ -69,7 +69,7 @@ const Chats = () => {
     const q = query(collection(db, "chats"), orderBy("createdAt", "desc"));
     const unsub = onSnapshot(q, (snapshot) => {
     const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    console.log("data - ",data);
+    // console.log("data - ",data);
       
       setSessions(data);
     });
