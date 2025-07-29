@@ -31,13 +31,6 @@ export default function ChangePassword() {
 
     // Put Api Call
     const handleUpdate = async () => {
-        // try {
-        //     await updatepasswordDetails(password); // full password object
-        //     alert("password info updated!");
-        // } catch (error) {
-        //     console.error("Error updating password info", error);
-        //     alert("Update failed!");
-        // }
     };
 
 
