@@ -25,8 +25,15 @@ export const loginUser = async (payload) => {
 // Fetch User Data by ID
 export const fetchUserById = async (userId) => {
     try {
-        const response = await axios.get(`${API_URL}/user/${userId}`);
-        return response.data; // returns { fullName, email }
+        const token = JSON.parse(localStorage.getItem("user"))?.token;
+
+        const response = await axios.get(`${API_URL}/user/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        return response.data; // will return full user object
     } catch (error) {
         throw error.response?.data?.message || "Error fetching user data";
     }
@@ -61,23 +68,39 @@ export const EditChatBotSettings = async (payload) => {
 };
 
 
-export const updateUserDetails = async (user) => {
+export const updateUserDetails = async ({ droppedItems, text }) => {
     const userID = localStorage.getItem("userId");
     const token = JSON.parse(localStorage.getItem("user"))?.token;
 
     if (!userID || !token) throw new Error("Missing userId or token");
 
-    const response = await axios.put(
-        `${API_URL}/user/${userID}/layout-settings`,   // normal user update route
-        user,
-        {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
+    const requestData = {
+        flowSetupSetting: {
+            question: { list: droppedItems },
+            text: text  // Include the text data here
         }
-    );
+    };
 
-    return response.data;
+    console.log("Request Data to Send:", requestData);  // Log the request data
+
+    try {
+        const response = await axios.put(
+            `${API_URL}/user/${userID}/layout-settings`,  // Update API endpoint
+            requestData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error("Error updating user details:", error);
+        throw error; // Re-throw the error to handle it in the calling component
+    }
 };
+
+
 
