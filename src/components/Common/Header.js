@@ -13,7 +13,7 @@ import {
   RadioGroup,
 } from '@mui/material';
 import { KeyboardArrowDown } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { fetchUserById } from '../../api/authApi';
 // Importing the new fetch function
 
@@ -117,7 +117,7 @@ const Header = () => {
               </MenuItem>
 
               {/* Account and Plan */}
-              <MenuItem >
+              <MenuItem component={Link} to="/account">
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
                   Account
                 </Typography>

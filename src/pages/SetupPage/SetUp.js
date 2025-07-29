@@ -43,30 +43,30 @@ const SetUp = () => {
   //   }
   // }, [dispatch]);
 
- useEffect(() => {
-  const fetchSettings = async () => {
-    try {
-      const user = JSON.parse(localStorage.getItem("user"));
-      const userId = localStorage.getItem("userId");
-      // console.log("userData - ",user);
-      if (user && userId) {
-        const userData = await fetchUserById(userId);
-        console.log("userData - ",userData);      
-        
-        if (userData?.botSettings) {
-          dispatch(updateSetting(userData.botSettings));
-        }
-      }
-    } catch (err) {
-      console.error("Failed to fetch bot settings:", err);
-    }
-  };
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const userId = localStorage.getItem("userId");
+        // console.log("userData - ",user);
+        if (user && userId) {
+          const userData = await fetchUserById(userId);
+          console.log("userData - ", userData);
 
-  fetchSettings();
-}, [dispatch]);
+          if (userData?.botSettings) {
+            dispatch(updateSetting(userData.botSettings));
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch bot settings:", err);
+      }
+    };
+
+    fetchSettings();
+  }, [dispatch]);
 
   const botSettings = useSelector((state) => state.botSettings);
-  
+
   const handleSave = async () => {
     // localStorage.setItem('botSettings', JSON.stringify(botSettings));
     // alert('Settings saved!');

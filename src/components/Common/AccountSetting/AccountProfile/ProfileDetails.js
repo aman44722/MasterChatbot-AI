@@ -1,13 +1,16 @@
-import {
-    Box, TextField, Button, Typography, Grid, Paper,
-} from '@mui/material';
-
 import '../../../../pages/SetupPage/AdminSettings.css';
-import { fetchUserById } from '../../../../api/authApi';
+import { EditChatBotSettings, fetchUserById, updateUserDetails } from '../../../../api/authApi';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 export default function ProfileDetails() {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState({
+        email: '',
+        fullName: 'ersd',
+        website: '',
+        phone: '',
+        gst: '',
+    });
     const labelStyle = {
         display: "flex",
         alignItems: "center",
@@ -29,8 +32,11 @@ export default function ProfileDetails() {
     };
 
 
+    // Get Api Call
     useEffect(() => {
         const userId = localStorage.getItem('userId');
+        // console.log("userId", userId);
+
         if (!userId) return;
 
         const registerUser = async () => {
@@ -41,11 +47,22 @@ export default function ProfileDetails() {
                 console.error("Error fetching user:", error);
             }
         };
-
         registerUser();
     }, []);
-    return (
 
+    // Put Api Call
+    const handleUpdate = async () => {
+        try {
+            await updateUserDetails(user); // full user object
+            alert("User info updated!");
+        } catch (error) {
+            console.error("Error updating user info", error);
+            alert("Update failed!");
+        }
+    };
+
+
+    return (
         <div
             className="custom-scrollbar"
             style={{
@@ -65,11 +82,11 @@ export default function ProfileDetails() {
                 <div className="mock-browser-layout" style={{ display: 'flex', flexDirection: 'column', width: '80%', gap: '30px' }}>
                     <div>
                         <label style={labelStyle} htmlFor="email">Email</label>
-                        <input style={inputStyle} type="email" id="email" value={user.email} />
+                        <input style={inputStyle} type="email" id="email" value={user.email} onChange={(e) => setUser({ ...user, email: e.target.value })} />
                     </div>
                     <div>
                         <label style={labelStyle} htmlFor="fullName">Full Name</label>
-                        <input style={inputStyle} type="text" id="fullName" value={user.fullName} />
+                        <input style={inputStyle} type="text" id="fullName" value={user.fullName} onChange={(e) => setUser({ ...user, fullName: e.target.value })} />
                     </div>
                     <div>
                         <label style={labelStyle} htmlFor="website">Website URL</label>
@@ -79,7 +96,7 @@ export default function ProfileDetails() {
                         <label style={labelStyle} htmlFor="phone">Phone Number</label>
                         <input style={inputStyle} type="tel" id="phone" value={user.phone} />
                     </div>
-                    <button style={{ background: '#4F46E5', color: '#fff', padding: '10px 25px', borderRadius: '8px', border: 'none' }} type="button">Update</button>
+                    <button onClick={handleUpdate} style={{ background: '#4F46E5', color: '#fff', padding: '10px 25px', borderRadius: '8px', border: 'none' }} type="button">Update</button>
                     <div>
                         <label style={labelStyle} htmlFor="gst">GST Number</label>
                         <input style={inputStyle} type="text" id="gst" />
@@ -129,6 +146,5 @@ export default function ProfileDetails() {
 
 
         </div >
-
     );
 }
