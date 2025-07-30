@@ -23,6 +23,7 @@ import QuestionDraggableItem from "./Fetures/Ouestions/QuestionDraggableItem";
 import { fetchUserById, updateUserDetails } from "../../../api/authApi";
 import { useDispatch } from "react-redux";
 import { updateSetting } from "../../../redux/botSettingsSlice";
+import { toast, ToastContainer } from "react-toastify";
 
 const FlowCanvasComponent = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -123,7 +124,13 @@ const FlowCanvasComponent = () => {
     };
     try {
       const response = await updateUserDetails(userPayload);
-      alert("Saved successfully");
+
+      if (response) {
+        toast.success("Saved successfully");
+      } else {
+        toast.error("Error saving the questions");
+      }
+
       console.log("Saved successfully:", response);
       // fetchUserById();
     } catch (error) {
@@ -227,6 +234,7 @@ const FlowCanvasComponent = () => {
           >
             Save
           </Button>
+          <ToastContainer />
         </Box>
       </Box>
 
