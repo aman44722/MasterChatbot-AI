@@ -97,3 +97,8 @@ export const updateUserDetails = async (user) => {
 };
 
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> e0bbdd5f04cef6f6900591211c52b8a61710031f
