@@ -10,6 +10,7 @@ import ChatPreview from '../../components/Admin/ViewSetupComponent/ChatPreview';
 import { resetSettings, updateSetting } from '../../redux/botSettingsSlice';
 import axios from "axios";
 import { EditChatBotSettings, fetchUserById } from '../../api/authApi';
+import { toast, ToastContainer } from 'react-toastify';
 
 
 const SetUp = () => {
@@ -73,11 +74,14 @@ const SetUp = () => {
     // console.log("Bot Setting Saved");
 
     try {
-      await EditChatBotSettings(botSettings);
-      alert('Bot settings updated on server!');
+      const response = await EditChatBotSettings(botSettings);
+
+      if (response) {
+        toast.success('Bot settings updated!!');
+      }
     } catch (error) {
       console.error('Error updating settings:', error);
-      alert('Failed to update settings on server.');
+      alert('Failed to update settings.');
     }
   };
 
@@ -186,6 +190,7 @@ const SetUp = () => {
             <button onClick={handleSave} style={{ background: '#4F46E5', color: '#fff', padding: '10px 25px', borderRadius: '8px', border: 'none' }}>Save</button>
           </div>
         </div>
+        <ToastContainer />
       </Box>
 
       {/* Right Preview Panel */}

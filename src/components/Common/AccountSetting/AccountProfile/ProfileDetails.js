@@ -2,6 +2,7 @@ import '../../../../pages/SetupPage/AdminSettings.css';
 import { EditChatBotSettings, fetchUserById, updateUserDetails } from '../../../../api/authApi';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { toast, ToastContainer } from 'react-toastify';
 
 export default function ProfileDetails() {
     const [user, setUser] = useState({
@@ -53,11 +54,15 @@ export default function ProfileDetails() {
     // Put Api Call
     const handleUpdate = async () => {
         try {
-            await updateUserDetails(user); // full user object
-            alert("User info updated!");
+            const response = await updateUserDetails(user); // Assuming `updateUserDetails` is your API call
+            if (response.user) {
+                toast.success("User info updated successfully!")
+            } else {
+                toast.error("Failed to update user info. Please try again!");
+            }
         } catch (error) {
             console.error("Error updating user info", error);
-            alert("Update failed!");
+            toast.error("Update failed! Something went wrong.");
         }
     };
 
@@ -100,7 +105,8 @@ export default function ProfileDetails() {
                         <label style={labelStyle} htmlFor="gst">GST Number</label>
                         <input style={inputStyle} type="text" id="gst" value={user.gst} onChange={(e) => setUser({ ...user, gst: e.target.value })} />
                     </div>
-                    <button onClick={handleUpdate} style={{ background: '#4F46E5', color: '#fff', padding: '10px 25px', borderRadius: '8px', border: 'none' }} type="button">Update</button>
+                    <button onClick={handleUpdate} style={{ background: '#4F46E5', color: '#fff', padding: '10px 25px', borderRadius: '8px', border: 'none', cursor: 'pointer' }} type="button">Update</button>
+                    <ToastContainer />
 
                     {/* <button style={{ background: '#4F46E5', color: '#fff', padding: '10px 25px', borderRadius: '8px', border: 'none' }} type="button">Save</button> */}
                 </div>
