@@ -45,7 +45,7 @@ export default function DeleteAccount() {
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'start',
-                gap: '20px',
+                gap: '21px',
                 width: '100%',
                 boxShadow: '0px 4px 20px #d8d8d8',
                 borderRadius: '20px',
