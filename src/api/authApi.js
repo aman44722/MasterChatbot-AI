@@ -48,7 +48,7 @@ export const EditChatBotSettings = async (payload) => {
         if (!userID || !token) {
             throw new Error("Missing userId or token in localStorage");
         }
-        
+
 
         const response = await axios.put(
             `${API_URL}/user/${userID}/layout-settings`,
@@ -68,28 +68,22 @@ export const EditChatBotSettings = async (payload) => {
 };
 
 
-export const updateUserDetails = async ({ droppedItems, text }) => {
+export const updateUserDetails = async (user) => {
     const userID = localStorage.getItem("userId");
     const token = JSON.parse(localStorage.getItem("user"))?.token;
 
-    if (!userID || !token) throw new Error("Missing userId or token");
-
-    const requestData = {
-        flowSetupSetting: {
-            question: { list: droppedItems },
-            text: text  // Include the text data here
-        }
-    };
-
-    console.log("Request Data to Send:", requestData);  // Log the request data
+    // Check if userId or token is missing
+    if (!userID || !token) {
+        throw new Error("Missing userId or token");
+    }
 
     try {
         const response = await axios.put(
-            `${API_URL}/user/${userID}/layout-settings`,  // Update API endpoint
-            requestData,
+            `${API_URL}/user/${userID}/layout-settings`, // Ensure string interpolation is correct
+            user,
             {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`, // Correct string interpolation for token
                     'Content-Type': 'application/json',
                 },
             }
@@ -98,9 +92,8 @@ export const updateUserDetails = async ({ droppedItems, text }) => {
         return response.data;
     } catch (error) {
         console.error("Error updating user details:", error);
-        throw error; // Re-throw the error to handle it in the calling component
+        throw new Error("Error updating user details");
     }
 };
-
 
 

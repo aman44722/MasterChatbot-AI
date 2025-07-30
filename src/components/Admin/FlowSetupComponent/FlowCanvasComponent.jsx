@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DndProvider, useDrop } from "react-dnd";
 import {
   Box,
@@ -20,6 +20,9 @@ import "./Style.css";
 import EditQuestionPopup from "./Fetures/Ouestions/EditQuestionPopup";
 import BotPreviewDialogPopup from "./Fetures/Ouestions/BotPreviewDialogPopup";
 import QuestionDraggableItem from "./Fetures/Ouestions/QuestionDraggableItem";
+import { fetchUserById, updateUserDetails } from "../../../api/authApi";
+import { useDispatch } from "react-redux";
+import { updateSetting } from "../../../redux/botSettingsSlice";
 
 const FlowCanvasComponent = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -60,11 +63,15 @@ const FlowCanvasComponent = () => {
       isOver: monitor.isOver(),
     }),
   }));
-
-  // 👉 Handle edit icon click
+  const dispatch = useDispatch();
+  // Handle editing a question
   const handleEdit = (item) => {
     setEditingItem(item);
     setOpenEdit(true);
+  };
+
+  const generateUniqueId = () => {
+    return "q" + Math.random().toString(36).substr(2, 9); // Generate unique ID
   };
 
   // ✅ Receive updated item from EditQuestionPopup and update droppedItems list
@@ -75,23 +82,22 @@ const FlowCanvasComponent = () => {
     setDroppedItems(updatedList);
   };
 
+  const handleDelete = (id) => {
+    setDroppedItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
   const handleCloseEdit = () => {
     setOpenEdit(false);
     setEditingItem(null);
   };
 
-  const handleDelete = (id) => {
-    setDroppedItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
   const handleDuplicate = (item) => {
     const newItem = {
       ...item,
-      id: Date.now(),
+      id: generateUniqueId(),
       text: item.text + " (copy)",
     };
     setDroppedItems((prev) => [...prev, newItem]);
-
     enqueueSnackbar("Question has been duplicated successfully", {
       variant: "success",
       anchorOrigin: {
@@ -99,6 +105,30 @@ const FlowCanvasComponent = () => {
         horizontal: "right",
       },
     });
+  };
+
+  const handleSave = async () => {
+    const userID = localStorage.getItem("userId");
+    const token = JSON.parse(localStorage.getItem("user"))?.token;
+
+    if (!userID || !token) {
+      throw new Error("Missing userId or token");
+    }
+    const userPayload = {
+      flowSetupSetting: {
+        question: {
+          list: droppedItems, // Send the updated list of questions
+        },
+      },
+    };
+    try {
+      const response = await updateUserDetails(userPayload);
+      alert("Saved successfully");
+      console.log("Saved successfully:", response);
+      // fetchUserById();
+    } catch (error) {
+      console.error("Error saving the questions:", error);
+    }
   };
 
   const handleConditionalFlow = (id) => {
@@ -109,6 +139,25 @@ const FlowCanvasComponent = () => {
     item.text.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  useEffect(() => {
+    // Fetch questions when the component mounts
+    const getQuestions = async () => {
+      try {
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+          throw new Error("User ID is missing in localStorage.");
+        }
+
+        const userData = await fetchUserById(userId);
+        setDroppedItems(userData?.flowSetupSetting?.question?.list || []); // Update state with the fetched data
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+        enqueueSnackbar("Error fetching questions", { variant: "error" });
+      }
+    };
+
+    getQuestions();
+  }, []);
   return (
     <Box
       ref={dropRef}
@@ -166,6 +215,7 @@ const FlowCanvasComponent = () => {
             Preview
           </Button>
           <Button
+            onClick={() => handleSave()}
             style={{
               background: "#4F46E5",
               color: "#fff",

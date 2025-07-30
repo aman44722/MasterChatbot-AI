@@ -91,6 +91,8 @@ const CustomTextEditor = ({ value, onChange }) => {
 
       {/* Editable Area */}
       <Box
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         ref={editorRef}
         contentEditable
         suppressContentEditableWarning

@@ -6,13 +6,13 @@ import ProfileDetails from '../components/Common/AccountSetting/AccountProfile/P
 
 import ChangePassword from '../components/Common/AccountSetting/ChangePassword/ChangePassword';
 import CreateDepartment from '../components/Common/AccountSetting/CreateDepartment/CreateDepartment';
-<<<<<<< Updated upstream
+// <<<<<<< Updated upstream
 import DeleteAccount from '../components/Common/AccountSetting/DeleteAccount/DeleteAccount';
 import CreateUser from '../components/Common/AccountSetting/CreateUser/CreateUser';
 import EmailServerCredentials from '../components/Common/AccountSetting/EmailServerCredentials/EmailServerCredentials';
 import LiveChatWhatsAppNotification from '../components/Common/AccountSetting/LiveChatWhatsAppNotification/LiveChatWhatsAppNotification';
-=======
->>>>>>> Stashed changes
+// =======
+// >>>>>>> Stashed changes
 
 export default function Account() {
     const [selected, setSelected] = useState('Your Profile');
