@@ -7,34 +7,38 @@ import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
 import LinkIcon from "@mui/icons-material/Link";
 import YouTubeIcon from "@mui/icons-material/YouTube";
+import DOMPurify from "dompurify";
+import OptionList from "./BasicTabs/SingleChoiceTab/Options/OptionInputRow";
 
 const CustomTextEditor = ({ value, onChange }) => {
   const editorRef = useRef(null);
   const [fontSize, setFontSize] = useState("16px");
 
   const applyCommand = (command, value = null) => {
-    document.execCommand(command, false, value);
+    const sanitizedValue = DOMPurify.sanitize(value); // sanitize input
+    document.execCommand(command, false, sanitizedValue);
     editorRef.current.focus();
   };
 
   const insertLink = () => {
     const url = prompt("Enter URL:");
     if (url) {
-      applyCommand("createLink", url);
+      const sanitizedUrl = DOMPurify.sanitize(url); // sanitize URL
+      applyCommand("createLink", sanitizedUrl);
     }
   };
 
   const embedYouTube = () => {
     const url = prompt("Enter YouTube video URL:");
     if (url) {
-      const embed = `<iframe width="100%" height="300" src="${url.replace(
+      const sanitizedUrl = DOMPurify.sanitize(url); // sanitize URL
+      const embed = `<iframe width="100%" height="300" src="${sanitizedUrl.replace(
         "watch?v=",
         "embed/"
       )}" frameborder="0" allowfullscreen></iframe>`;
       document.execCommand("insertHTML", false, embed);
     }
   };
-
   const handleFontSizeChange = (e) => {
     setFontSize(e.target.value);
     applyCommand("fontSize", "7");
@@ -108,6 +112,8 @@ const CustomTextEditor = ({ value, onChange }) => {
       >
         {/* innerHTML will be handled by useEffect */}
       </Box>
+
+      {/* <OptionList /> */}
     </Box>
   );
 };

@@ -13,25 +13,41 @@ import {
 import React, { useEffect, useState } from "react";
 import MediaTabComponent from "../../MediaUploadComponet/MediaTabComponent";
 import CustomTextEditor from "./CustomTextEditor";
-import SingleChoiceTab from "./BasicTabs/SingleChoiceTab/SingleChoiceTab";
+// import SingleChoiceTab from "./BasicTabs/SingleChoiceTab/SingleChoiceTab";
 import QuestionTab from "./BasicTabs/QuestionTab/QuestionTab";
 import NumberTab from "./BasicTabs/NumberTab/NumberTab";
+import EmailTab from "./BasicTabs/EmailTab/EmailTab";
+import MultipleChoiceTab from "./BasicTabs/MultipleChoiceTab/MultipleChoiceTab";
+import MobileNumberTab from "./BasicTabs/MobileNumberTab/MobileNumberTab";
+// import SingleChoiceTab from "./BasicTabs/SingleChoiceTab/SingleChoiceTab";
+import OptionList from "./BasicTabs/SingleChoiceTab/Options/OptionInputRow";
+import ShowOptionsButtons from "./BasicTabs/SingleChoiceTab/Options/ShowOptionsButtons";
 
 const EditQuestionPopup = ({
   openEdit,
   handleCloseEdit,
   editingItem,
+  // editingItem1,
   onUpdate,
 }) => {
   const [tabIndex, setTabIndex] = useState(0);
   const [text, setText] = useState("");
+  const [options, setOptions] = useState("New Option");
+  const [flexDirection, setFlexDirection] = useState("column");
   const [errorMessage, setErrorMessage] = useState(
     "Please enter a valid answer"
   );
 
   useEffect(() => {
+    // Set text and singleChoice if editingItem is available
     if (editingItem?.text) {
       setText(editingItem.text);
+    }
+    if (editingItem?.options) {
+      setOptions(editingItem.options);
+    }
+    if (editingItem?.flexDirection) {
+      setFlexDirection(editingItem.flexDirection);
     }
   }, [editingItem]);
 
@@ -40,16 +56,34 @@ const EditQuestionPopup = ({
   };
 
   const handleSave = () => {
+    // Validate text (check if it's not empty)
     if (text.trim() === "") {
-      setErrorMessage("Question cannot be empty");
+      setErrorMessage("Question text cannot be empty");
       return;
     }
 
-    // Send updated question text to parent component
+    // Check if options is an array or string and validate accordingly
+    if (Array.isArray(options)) {
+      // Validate if any option is empty
+      if (options.some((option) => option.trim() === "")) {
+        setErrorMessage("Question options cannot contain empty values");
+        return;
+      }
+    } else if (typeof options === "string" && options.trim() === "") {
+      setErrorMessage("Question options cannot be empty");
+      return;
+    }
+
+    // Send the updated question data to the parent component
     onUpdate({
       ...editingItem,
       text,
+      options,
+      flexDirection,
     });
+    console.log("options - ", options);
+    console.log("flexDirection - ", flexDirection);
+    console.log("text - ", text);
 
     handleCloseEdit();
   };
@@ -81,7 +115,35 @@ const EditQuestionPopup = ({
                 setErrorMessage={setErrorMessage}
               />
             ) : editingItem?.type === "single_choice" ? (
-              <SingleChoiceTab />
+              <Box>
+                <ShowOptionsButtons
+                  flexDirection={flexDirection} // Pass the current flexDirection
+                  setFlexDirection={setFlexDirection} // Pass the setter function to handle updates
+                  errorMessage={errorMessage}
+                  setErrorMessage={setErrorMessage}
+                />
+                <OptionList
+                  value={options}
+                  onChange={setOptions}
+                  errorMessage={errorMessage}
+                  setErrorMessage={setErrorMessage}
+                />
+              </Box>
+            ) : editingItem?.type === "email" ? (
+              <EmailTab
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
+              />
+            ) : editingItem?.type === "multiple_choice" ? (
+              <MultipleChoiceTab
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
+              />
+            ) : editingItem?.type === "mobile_number" ? (
+              <MobileNumberTab
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
+              />
             ) : editingItem?.type === "number" ? (
               <NumberTab />
             ) : (

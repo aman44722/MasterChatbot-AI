@@ -29,6 +29,7 @@ const FlowCanvasComponent = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const [droppedItems, setDroppedItems] = useState([]);
+  const [flexDirection, setFlexDirection] = useState("row");
   const [openEdit, setOpenEdit] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -36,6 +37,7 @@ const FlowCanvasComponent = () => {
   const [openPreview, setOpenPreview] = useState(false);
 
   const [botName, setBotName] = useState("Chatbot");
+  const [textAlign, setTextAlign] = useState("textAlign");
   const [description, setDescription] = useState("Assistant");
   const [welcomeText, setWelcomeText] = useState(
     "Hi there! How can I help you?"
@@ -81,6 +83,7 @@ const FlowCanvasComponent = () => {
       q.id === updatedItem.id ? updatedItem : q
     );
     setDroppedItems(updatedList);
+    console.log("updatedList", updatedList);
   };
 
   const handleDelete = (id) => {
@@ -286,6 +289,8 @@ const FlowCanvasComponent = () => {
         description={description}
         welcomeText={welcomeText}
         botAvatar={botLogo}
+        textAlign={textAlign}
+        flexDirection={flexDirection}
         onUpdate={handleUpdate}
       />
     </Box>

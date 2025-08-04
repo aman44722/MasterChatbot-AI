@@ -75,35 +75,44 @@ const componentItems = [
   {
     label: (
       <>
-        Single<br />Choice
+        Single
+        <br />
+        Choice
       </>
     ),
     defaultLabel: "What is your gender?",
     icon: <DoneOutlineIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
-     type: "single_choice",
+    type: "single_choice",
   },
   {
     label: "Email",
     defaultLabel: "Enter your email ID",
     icon: <EmailIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "Email",
   },
   {
     label: (
       <>
-        Multiple<br />Choice
+        Multiple
+        <br />
+        Choice
       </>
     ),
     defaultLabel: "Select multiple options",
     icon: <DoneAllIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "multiple_options",
   },
   {
     label: (
       <>
-        Mobile<br />Number
+        Mobile
+        <br />
+        Number
       </>
     ),
     defaultLabel: "Enter your mobile number",
     icon: <DialpadIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "mobile_number",
   },
   {
     label: "Number",
@@ -115,21 +124,25 @@ const componentItems = [
     label: "Rating",
     defaultLabel: "Give a rating",
     icon: <GradeIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "rating",
   },
   {
     label: "Date Picker",
     defaultLabel: "Select a date",
     icon: <CalendarMonthIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "date_picker",
   },
   {
     label: "Time Picker",
     defaultLabel: "Select a time",
     icon: <AccessTimeIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "time_picker",
   },
   {
     label: "Location",
     defaultLabel: "Enter your location",
     icon: <LocationOnIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "location",
   },
   {
     label: "Range",
@@ -140,51 +153,65 @@ const componentItems = [
     label: "File Upload",
     defaultLabel: "Upload your file",
     icon: <PublishIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "file_upload",
   },
   {
     label: "Website",
     defaultLabel: "Enter website URL",
-    icon: <DashboardCustomizeIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    icon: (
+      <DashboardCustomizeIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />
+    ),
+    type: "website",
   },
   {
     label: "Ask Contacts",
     defaultLabel: "Select a contact",
     icon: <RecentActorsIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "ask_contacts",
   },
   {
     label: "Order Items",
     defaultLabel: "Order your items",
     icon: <ShoppingCartIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "order_items",
   },
   {
     label: "Authenticator",
     defaultLabel: "Enter OTP",
     icon: <KeyIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "authenticator",
   },
   {
     label: "Form",
     defaultLabel: "Fill this form",
     icon: <FlipToFrontIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "form",
   },
   {
     label: "Carousel with buttons",
     defaultLabel: "View carousel options",
     icon: <RecommendIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "carousel_with_buttons",
   },
   {
     label: "Dynamic Question",
     defaultLabel: "Dynamic input",
     icon: <LensIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "dynamic_question",
   },
   {
     label: "Real Time Search",
     defaultLabel: "Search here",
-    icon: <ContentPasteSearchIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    icon: (
+      <ContentPasteSearchIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />
+    ),
+    type: "Real_time_search",
   },
   {
     label: "Appointment Booking",
     defaultLabel: "Book your appointment",
     icon: <BookOnlineIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
+    type: "appointment_booking",
   },
 ];
 
@@ -222,17 +249,29 @@ const FlowSidebarComponent = () => {
             Main Flow
           </label>
         </Box>
-        <AddIcon sx={{ cursor: "pointer", fontSize: "18px", color: "#6B7280", mr: 1 }} />
-        <ContentCopyIcon sx={{ cursor: "pointer", fontSize: "18px", color: "#6B7280" }} />
+        <AddIcon
+          sx={{ cursor: "pointer", fontSize: "18px", color: "#6B7280", mr: 1 }}
+        />
+        <ContentCopyIcon
+          sx={{ cursor: "pointer", fontSize: "18px", color: "#6B7280" }}
+        />
       </Box>
 
       {/* Title */}
-      <Typography sx={{ fontWeight: "bold", fontSize: "16px", textAlign: "center" }}>
+      <Typography
+        sx={{ fontWeight: "bold", fontSize: "16px", textAlign: "center" }}
+      >
         Ask User
       </Typography>
 
       {/* Components */}
-      <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "12px" }}>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "repeat(4, 1fr)",
+          gap: "12px",
+        }}
+      >
         {componentItems.map((item, index) => (
           <DraggableItem key={index} item={item} />
         ))}

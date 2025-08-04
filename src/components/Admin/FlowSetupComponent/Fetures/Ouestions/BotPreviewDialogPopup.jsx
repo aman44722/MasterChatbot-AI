@@ -1,18 +1,28 @@
 import React, { useState } from "react";
 import {
-  Dialog,
   Box,
+  Button,
   Typography,
   IconButton,
   Avatar,
-  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
+// import ShowOptionsButtons from "./ShowOptionsButtons"; // Assuming ShowOptionsButtons is in the same directory
 
-const BotPreviewDialogPopup = ({ open, onClose, droppedItems }) => {
+const BotPreviewDialogPopup = ({
+  open,
+  onClose,
+  droppedItems,
+  flexDirection,
+  setFlexDirection,
+}) => {
   const {
     botName,
     description,
@@ -25,6 +35,7 @@ const BotPreviewDialogPopup = ({ open, onClose, droppedItems }) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [inputText, setInputText] = useState("");
   const [userMessages, setUserMessages] = useState([]);
+  // const [flexDirection, setFlexDirection] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
 
   const handleSend = () => {
@@ -172,20 +183,74 @@ const BotPreviewDialogPopup = ({ open, onClose, droppedItems }) => {
                   sx={{
                     display: "flex",
                     alignItems: "flex-start",
+                    flexDirection: "column", // Use flexDirection passed as prop here
                     gap: 1.5,
                     mb: 1,
                   }}
                 >
-                  <Avatar src={avatar} sx={{ width: 30, height: 30 }} />
                   <Box
                     sx={{
-                      backgroundColor: "#DBEAFE",
-                      padding: "10px 14px",
-                      borderRadius: getBubbleRadius(),
-                      maxWidth: "80%",
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: 1.5,
+                      mb: 1,
                     }}
-                    dangerouslySetInnerHTML={{ __html: item.text }}
-                  />
+                  >
+                    <Avatar src={avatar} sx={{ width: 30, height: 30 }} />
+                    <Box
+                      sx={{
+                        backgroundColor: "#DBEAFE",
+                        padding: "14px", // Slight padding adjustment to match the image
+                        borderRadius: getBubbleRadius(),
+                        maxWidth: "80%",
+                      }}
+                      dangerouslySetInnerHTML={{ __html: item.text }}
+                    />
+                  </Box>
+
+                  {/* Option Rendering: Displaying options as buttons */}
+                  {item.options && (
+                    <Box sx={{ width: "100%", marginBottom: "20px" }}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "start",
+                          flexDirection: "column", // Dynamically change flexDirection here
+                          width: "100%",
+                          gap: "10px",
+                        }}
+                      >
+                        {item.options.map(
+                          (option, flexDirection, optionIndex) => (
+                            <button
+                              key={optionIndex}
+                              style={{
+                                backgroundColor: "#2563eb",
+                                color: "#fff",
+                                padding: "8px 10px",
+                                borderRadius: "10px",
+                                width: "65%",
+                                marginBottom: "10px", // Space between options
+                                marginLeft:
+                                  flexDirection === flexDirection
+                                    ? "10px"
+                                    : "0", // Horizontal alignment
+                                textAlign: "center",
+                              }}
+                              onClick={() => {
+                                const updatedMessages = [...userMessages];
+                                updatedMessages[index] = option;
+                                setUserMessages(updatedMessages);
+                                setCurrentQuestionIndex(index + 1);
+                              }}
+                            >
+                              {option}
+                            </button>
+                          )
+                        )}
+                      </Box>
+                    </Box>
+                  )}
                 </Box>
 
                 {userMessages[index] && (

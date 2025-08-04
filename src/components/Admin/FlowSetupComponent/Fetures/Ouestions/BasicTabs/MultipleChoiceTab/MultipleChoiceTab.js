@@ -1,7 +1,7 @@
 import { Box, Switch, TextField, Typography } from '@mui/material'
 import React from 'react'
 
-const EmailTab = () => {
+const MultipleChoiceTab = () => {
     return (
         <>
             <Box
@@ -12,7 +12,7 @@ const EmailTab = () => {
                     gap: 2,
                 }}
             >
-                <Typography>Do Not Give Skip email</Typography>
+                <Typography>MultipleChoiceTab</Typography>
                 <Switch />
             </Box>
 
@@ -24,4 +24,4 @@ const EmailTab = () => {
     )
 }
 
-export default EmailTab
+export default MultipleChoiceTab
