@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -7,14 +7,30 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  CircularProgress,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import picImg from "./picture.svg"; // placeholder image
 import { toast, ToastContainer } from "react-toastify";
 
-const GIPHY_API_KEY = "lADTumhthnqlLrBtIItDmB5PFDCns3iy"; // Replace with your API key
+// Replace with your Giphy API Key
+const GIPHY_API_KEY = "lADTumhthnqlLrBtIItDmB5PFDCns3iy";
+
+const Item = styled(Box)(({ theme }) => ({
+  backgroundColor: "#fff",
+  padding: theme.spacing(2),
+  textAlign: "center",
+  borderRadius: "6px",
+  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+  cursor: "pointer",
+  transition: "transform 0.3s ease",
+  "&:hover": {
+    transform: "scale(1.05)",
+  },
+}));
 
 const MediaTabComponent = ({ media, setMedia }) => {
   const [selectedGifUrl, setSelectedGifUrl] = useState(media || "");
@@ -22,11 +38,47 @@ const MediaTabComponent = ({ media, setMedia }) => {
   const [gifs, setGifs] = useState([]);
   const [offset, setOffset] = useState(0);
   const [typingTimeout, setTypingTimeout] = useState(null);
+  const [loading, setLoading] = useState(false); // State for loading status
+  const [noResults, setNoResults] = useState(false); // State for no results message
 
   useEffect(() => {
     fetchGifs(false, 0);
   }, []);
 
+  const fetchGifs = async (append = false, customOffset = 0) => {
+    try {
+      setLoading(true); // Set loading to true when fetching
+      const response = await axios.get("https://api.giphy.com/v1/gifs/search", {
+        params: {
+          api_key: GIPHY_API_KEY,
+          q: searchTerm,
+          limit: 10,
+          offset: customOffset,
+        },
+      });
+
+      const newGifs = response.data.data;
+
+      // If no GIFs are found, set noResults to true
+      if (newGifs.length === 0) {
+        setNoResults(true);
+      } else {
+        setNoResults(false); // Reset noResults when there are results
+      }
+
+      // Avoid duplicates when appending
+      setGifs((prev) => {
+        const prevIds = new Set(prev.map((gif) => gif.id));
+        const uniqueNew = newGifs.filter((gif) => !prevIds.has(gif.id));
+        return append ? [...prev, ...uniqueNew] : newGifs;
+      });
+
+      setLoading(false); // Stop loading when GIFs are fetched
+    } catch (err) {
+      console.error("GIF fetch failed:", err);
+      setLoading(false); // Stop loading on error
+    }
+  };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -41,35 +93,11 @@ const MediaTabComponent = ({ media, setMedia }) => {
 
         const reader = new FileReader();
         reader.onloadend = () => {
-          setMedia(reader.result);
-          setSelectedGifUrl("");
+          setMedia(reader.result); // Updating media state with the selected file
+          setSelectedGifUrl(""); // Clear the selected GIF URL
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file); // Reading the file
       };
-    }
-  };
-
-  const fetchGifs = async (append = false, customOffset = 0) => {
-    try {
-      const response = await axios.get("https://api.giphy.com/v1/gifs/search", {
-        params: {
-          api_key: GIPHY_API_KEY,
-          q: searchTerm,
-          limit: 10,
-          offset: customOffset,
-        },
-      });
-
-      const newGifs = response.data.data;
-
-      // Avoid duplicates when appending
-      setGifs((prev) => {
-        const prevIds = new Set(prev.map((gif) => gif.id));
-        const uniqueNew = newGifs.filter((gif) => !prevIds.has(gif.id));
-        return append ? [...prev, ...uniqueNew] : newGifs;
-      });
-    } catch (err) {
-      console.error("GIF fetch failed:", err);
     }
   };
 
@@ -138,7 +166,9 @@ const MediaTabComponent = ({ media, setMedia }) => {
       </Box>
 
       {/* --- OR --- */}
-      <Typography sx={{ textAlign: "center", color: "#6b7280" }}>
+      <Typography
+        sx={{ textAlign: "center", color: "#6b7280", fontSize: "12px" }}
+      >
         --- OR ---
       </Typography>
 
@@ -157,50 +187,60 @@ const MediaTabComponent = ({ media, setMedia }) => {
         }}
       />
 
-      {/* GIF Grid */}
-      <Grid container spacing={2}>
-        {gifs.map((gif, index) => (
-          <Grid item xs={3} key={index}>
-            <Box sx={{ position: "relative" }}>
-              <img
-                src={gif.images.fixed_width.url}
-                alt={gif.title}
-                style={{
-                  width: "100%",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                  border:
-                    selectedGifUrl === gif.images.original.url
-                      ? "3px solid #2563eb"
-                      : "2px solid transparent",
-                }}
-                onClick={() => {
-                  setMedia(gif.images.original.url);
-                  setSelectedGifUrl(gif.images.original.url);
-                }}
-              />
-              {selectedGifUrl === gif.images.original.url && (
-                <IconButton
-                  size="small"
-                  onClick={handleRemoveMedia}
-                  sx={{
-                    position: "absolute",
-                    top: "6px",
-                    right: "6px",
-                    background: "#fff",
-                    boxShadow: "0 0 4px rgba(0,0,0,0.2)",
+      {/* Loader Spinner */}
+      {loading ? (
+        <Box sx={{ textAlign: "center", mt: 2 }}>
+          <CircularProgress />
+        </Box>
+      ) : noResults ? (
+        <Typography sx={{ textAlign: "center", mt: 2, color: "red" }}>
+          Data not found. Please type another search term.
+        </Typography>
+      ) : (
+        <Grid container spacing={4}>
+          {gifs.map((gif, index) => (
+            <Grid item xs={6} md={4} key={index}>
+              <Item sx={{ position: "relative" }}>
+                <img
+                  src={gif.images.fixed_width.url}
+                  alt={gif.title}
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    border:
+                      selectedGifUrl === gif.images.original.url
+                        ? "3px solid #2563eb"
+                        : "2px solid transparent",
                   }}
-                >
-                  <CloseIcon fontSize="small" />
-                </IconButton>
-              )}
-            </Box>
-            <ToastContainer />
-          </Grid>
-        ))}
-      </Grid>
+                  onClick={() => {
+                    setMedia(gif.images.original.url);
+                    setSelectedGifUrl(gif.images.original.url);
+                  }}
+                />
+                {selectedGifUrl === gif.images.original.url && (
+                  <IconButton
+                    size="small"
+                    onClick={handleRemoveMedia}
+                    sx={{
+                      position: "absolute",
+                      top: "6px",
+                      right: "6px",
+                      background: "#fff",
+                      boxShadow: "0 0 4px rgba(0,0,0,0.2)",
+                    }}
+                  >
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                )}
+              </Item>
+            </Grid>
+          ))}
+        </Grid>
+      )}
 
-      {/* Load More */}
+      {/* Load More Button */}
       {gifs.length > 0 && (
         <Box textAlign="center" mt={2}>
           <Button variant="outlined" onClick={handleLoadMore}>

@@ -1,3 +1,4 @@
+import "./Style.css";
 import {
   Box,
   Button,
@@ -10,6 +11,7 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
+
 import React, { useEffect, useState } from "react";
 import MediaTabComponent from "../../MediaUploadComponet/MediaTabComponent";
 import CustomTextEditor from "./CustomTextEditor";
