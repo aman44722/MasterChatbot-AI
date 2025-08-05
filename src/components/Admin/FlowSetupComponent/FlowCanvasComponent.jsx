@@ -29,7 +29,7 @@ const FlowCanvasComponent = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const [droppedItems, setDroppedItems] = useState([]);
-  const [flexDirection, setFlexDirection] = useState("row");
+
   const [openEdit, setOpenEdit] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -290,7 +290,7 @@ const FlowCanvasComponent = () => {
         welcomeText={welcomeText}
         botAvatar={botLogo}
         textAlign={textAlign}
-        flexDirection={flexDirection}
+        // flexDirection={flexDirection}
         onUpdate={handleUpdate}
       />
     </Box>

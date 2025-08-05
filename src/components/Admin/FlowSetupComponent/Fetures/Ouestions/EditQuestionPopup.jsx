@@ -34,6 +34,7 @@ const EditQuestionPopup = ({
   const [text, setText] = useState("");
   const [options, setOptions] = useState("New Option");
   const [flexDirection, setFlexDirection] = useState("column");
+  const [media, setMedia] = useState({});
   const [errorMessage, setErrorMessage] = useState(
     "Please enter a valid answer"
   );
@@ -49,6 +50,7 @@ const EditQuestionPopup = ({
     if (editingItem?.flexDirection) {
       setFlexDirection(editingItem.flexDirection);
     }
+    if (editingItem?.media !== undefined) setMedia(editingItem.media);
   }, [editingItem]);
 
   const handleTabChange = (event, newValue) => {
@@ -64,7 +66,6 @@ const EditQuestionPopup = ({
 
     // Check if options is an array or string and validate accordingly
     if (Array.isArray(options)) {
-      // Validate if any option is empty
       if (options.some((option) => option.trim() === "")) {
         setErrorMessage("Question options cannot contain empty values");
         return;
@@ -74,16 +75,19 @@ const EditQuestionPopup = ({
       return;
     }
 
-    // Send the updated question data to the parent component
+    // Pass media as "" if removed, otherwise pass the media URL
     onUpdate({
       ...editingItem,
       text,
       options,
       flexDirection,
+      media: media || "", // Ensure empty string is sent if removed
     });
+
     console.log("options - ", options);
     console.log("flexDirection - ", flexDirection);
     console.log("text - ", text);
+    console.log("media - ", media);
 
     handleCloseEdit();
   };
@@ -156,7 +160,9 @@ const EditQuestionPopup = ({
             )}
           </Box>
         )}
-        {tabIndex === 1 && <MediaTabComponent />}
+        {tabIndex === 1 && (
+          <MediaTabComponent media={media} setMedia={setMedia} />
+        )}
         {tabIndex === 2 && (
           <Typography variant="body2">
             Advanced tab content goes here.

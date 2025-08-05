@@ -21,7 +21,6 @@ const BotPreviewDialogPopup = ({
   onClose,
   droppedItems,
   flexDirection,
-  setFlexDirection,
 }) => {
   const {
     botName,
@@ -183,7 +182,7 @@ const BotPreviewDialogPopup = ({
                   sx={{
                     display: "flex",
                     alignItems: "flex-start",
-                    flexDirection: "column", // Use flexDirection passed as prop here
+                    flexDirection: "column",
                     gap: 1.5,
                     mb: 1,
                   }}
@@ -200,7 +199,7 @@ const BotPreviewDialogPopup = ({
                     <Box
                       sx={{
                         backgroundColor: "#DBEAFE",
-                        padding: "14px", // Slight padding adjustment to match the image
+                        padding: "14px",
                         borderRadius: getBubbleRadius(),
                         maxWidth: "80%",
                       }}
@@ -209,45 +208,74 @@ const BotPreviewDialogPopup = ({
                   </Box>
 
                   {/* Option Rendering: Displaying options as buttons */}
-                  {item.options && (
+                  {item.options && !userMessages[index] && (
                     <Box sx={{ width: "100%", marginBottom: "20px" }}>
+                      {/* Show uploaded media if available */}
+                      {item.media && (
+                        <Box sx={{ mb: 2 }}>
+                          <img
+                            src={item.media}
+                            alt="uploaded"
+                            style={{
+                              maxWidth: "240px",
+                              maxHeight: "160px",
+                              borderRadius: "10px",
+                              border: "1px solid #e5e7eb",
+                              objectFit: "cover",
+                            }}
+                          />
+                        </Box>
+                      )}
+
+                      {/* Show Option if available */}
                       <Box
                         sx={{
                           display: "flex",
+                          justifyContent: "left",
                           alignItems: "start",
-                          flexDirection: "column", // Dynamically change flexDirection here
+                          flexDirection: item.flexDirection || "column",
                           width: "100%",
-                          gap: "10px",
+                          rowGap: "0px",
+                          columnGap: "10px",
+                          marginLeft: "8%",
+                          flexWrap: "wrap",
                         }}
                       >
-                        {item.options.map(
-                          (option, flexDirection, optionIndex) => (
-                            <button
-                              key={optionIndex}
-                              style={{
-                                backgroundColor: "#2563eb",
-                                color: "#fff",
-                                padding: "8px 10px",
-                                borderRadius: "10px",
-                                width: "65%",
-                                marginBottom: "10px", // Space between options
-                                marginLeft:
-                                  flexDirection === flexDirection
-                                    ? "10px"
-                                    : "0", // Horizontal alignment
-                                textAlign: "center",
-                              }}
-                              onClick={() => {
-                                const updatedMessages = [...userMessages];
-                                updatedMessages[index] = option;
-                                setUserMessages(updatedMessages);
-                                setCurrentQuestionIndex(index + 1);
-                              }}
-                            >
-                              {option}
-                            </button>
-                          )
-                        )}
+                        {item.options.map((option, optionIndex) => (
+                          <button
+                            key={optionIndex}
+                            style={{
+                              backgroundColor: "#2563eb",
+                              color: "#ffffff",
+                              padding: "10px 24px",
+                              borderRadius: "12px",
+                              border: "none",
+                              fontSize: "14px",
+                              fontWeight: 500,
+                              cursor: "pointer",
+                              transition: "all 0.3s ease",
+                              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.08)",
+                              marginBottom: "12px",
+                              textAlign: "center",
+                            }}
+                            onClick={() => {
+                              const updatedMessages = [...userMessages];
+                              updatedMessages[index] = option;
+                              setUserMessages(updatedMessages);
+                              setCurrentQuestionIndex(index + 1);
+                            }}
+                            onMouseOver={(e) =>
+                              (e.currentTarget.style.backgroundColor =
+                                "#1e40af")
+                            }
+                            onMouseOut={(e) =>
+                              (e.currentTarget.style.backgroundColor =
+                                "#2563eb")
+                            }
+                          >
+                            {option}
+                          </button>
+                        ))}
                       </Box>
                     </Box>
                   )}

@@ -4,6 +4,7 @@ import { Box, Button, Typography } from "@mui/material";
 const options = [
   "row",   // Represents flexDirection: "column"
   "column", // Represents flexDirection: "row"
+
 ];
 
 const ShowOptionsButtons = ({ flexDirection, setFlexDirection }) => {
@@ -27,7 +28,7 @@ const ShowOptionsButtons = ({ flexDirection, setFlexDirection }) => {
       <Typography sx={{ mb: '10px', fontSize: '14px' }}>Select Layout Direction</Typography>
       <div style={{
         display: 'flex',
-        flexDirection: "column",
+        flexDirection: "row",
         justifyContent: 'center',
         gap: '4px'
       }}>
@@ -51,13 +52,7 @@ const ShowOptionsButtons = ({ flexDirection, setFlexDirection }) => {
       </div>
 
       {/* Render options based on flexDirection */}
-      <Box sx={{
-        display: "flex",
-        flexDirection: flexDirection,  // Dynamically change flexDirection here
-        gap: "10px",
-      }}>
-        {/* You can dynamically render other content depending on flexDirection */}
-      </Box>
+
     </Box>
   );
 };

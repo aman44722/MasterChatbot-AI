@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, IconButton, Input } from "@mui/material";
+import { Box, Button, IconButton, Input, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const OptionInputRow = ({ value, onChange }) => {
@@ -43,15 +43,33 @@ const OptionInputRow = ({ value, onChange }) => {
       {/* Render existing options */}
       <Box sx={{ borderRadius: "6px", backgroundColor: "#fff", marginBottom: "16px" }}>
         {options.map((option, index) => (
-          <Box key={index} sx={{ marginBottom: "8px", display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <Input
+          <Box key={index} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+            <TextField
               value={option}
               onChange={(e) => handleOptionChange(index, e.target.value)}
               fullWidth
+              placeholder={`Option ${index + 1}`}
+              size="small"
               variant="outlined"
-              sx={{ marginBottom: "6px" }}
+              sx={{
+                marginBottom: "10px",
+                borderRadius: "8px",
+                backgroundColor: "#f9fafb",
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#d1d5db", // Tailwind's gray-300
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#2563eb", // Hover blue
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#2563eb", // Focus blue
+                    boxShadow: "0 0 0 1px #2563eb",
+                  },
+                },
+              }}
             />
-            <IconButton onClick={() => deleteOption(index)} sx={{ marginLeft: 1, height: '40px', width: '40px', color: 'red' }}>
+            <IconButton onClick={() => deleteOption(index)} sx={{ marginLeft: 1, height: '40px', width: '40px', color: 'red', marginBottom: "18px" }}>
               <DeleteIcon />
             </IconButton>
           </Box>
@@ -62,7 +80,7 @@ const OptionInputRow = ({ value, onChange }) => {
       <Button onClick={addOption} variant="outlined" sx={{ marginTop: 2 }}>
         Add Option
       </Button>
-    </Box>
+    </Box >
   );
 };
 
