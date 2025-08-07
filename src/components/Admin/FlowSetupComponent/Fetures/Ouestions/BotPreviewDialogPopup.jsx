@@ -9,19 +9,14 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Switch,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
-// import ShowOptionsButtons from "./ShowOptionsButtons"; // Assuming ShowOptionsButtons is in the same directory
 
-const BotPreviewDialogPopup = ({
-  open,
-  onClose,
-  droppedItems,
-  flexDirection,
-}) => {
+const BotPreviewDialogPopup = ({ open, onClose, droppedItems }) => {
   const {
     botName,
     description,
@@ -34,8 +29,8 @@ const BotPreviewDialogPopup = ({
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [inputText, setInputText] = useState("");
   const [userMessages, setUserMessages] = useState([]);
-  // const [flexDirection, setFlexDirection] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [skipClicked, setSkipClicked] = useState(false);
 
   const handleSend = () => {
     if (inputText.trim() === "") return;
@@ -47,6 +42,15 @@ const BotPreviewDialogPopup = ({
     setTimeout(() => {
       setCurrentQuestionIndex((prev) => prev + 1);
       setIsTyping(false);
+    }, 1200);
+  };
+
+  const handleSkip = () => {
+    setSkipClicked(true); // Set the skip as clicked
+    setIsTyping(true); // Start typing animation immediately for skip
+    setTimeout(() => {
+      setCurrentQuestionIndex((prev) => prev + 1); // Skip to the next question
+      setIsTyping(false); // Stop typing animation after skipping
     }, 1200);
   };
 
@@ -107,6 +111,7 @@ const BotPreviewDialogPopup = ({
                 setCurrentQuestionIndex(0);
                 setUserMessages([]);
                 setInputText("");
+                setSkipClicked(false);
                 setIsTyping(false);
               }}
             >
@@ -206,27 +211,25 @@ const BotPreviewDialogPopup = ({
                       dangerouslySetInnerHTML={{ __html: item.text }}
                     />
                   </Box>
-
+                  {/* Show uploaded media if available */}
+                  {item.media && (
+                    <Box sx={{ mb: 2 }}>
+                      <img
+                        src={item.media}
+                        alt="uploaded"
+                        style={{
+                          maxWidth: "240px",
+                          maxHeight: "160px",
+                          borderRadius: "10px",
+                          border: "1px solid #e5e7eb",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </Box>
+                  )}
                   {/* Option Rendering: Displaying options as buttons */}
                   {item.options && !userMessages[index] && (
                     <Box sx={{ width: "100%", marginBottom: "20px" }}>
-                      {/* Show uploaded media if available */}
-                      {item.media && (
-                        <Box sx={{ mb: 2 }}>
-                          <img
-                            src={item.media}
-                            alt="uploaded"
-                            style={{
-                              maxWidth: "240px",
-                              maxHeight: "160px",
-                              borderRadius: "10px",
-                              border: "1px solid #e5e7eb",
-                              objectFit: "cover",
-                            }}
-                          />
-                        </Box>
-                      )}
-
                       {/* Show Option if available */}
                       <Box
                         sx={{
@@ -241,47 +244,81 @@ const BotPreviewDialogPopup = ({
                           flexWrap: "wrap",
                         }}
                       >
-                        {item.options.map((option, optionIndex) => (
-                          <button
-                            key={optionIndex}
-                            style={{
-                              backgroundColor: "#2563eb",
-                              color: "#ffffff",
-                              padding: "10px 24px",
-                              borderRadius: "12px",
-                              border: "none",
-                              fontSize: "14px",
-                              fontWeight: 500,
-                              cursor: "pointer",
-                              transition: "all 0.3s ease",
-                              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.08)",
-                              marginBottom: "12px",
-                              textAlign: "center",
-                            }}
-                            onClick={() => {
-                              const updatedMessages = [...userMessages];
-                              updatedMessages[index] = option;
-                              setUserMessages(updatedMessages);
-                              setCurrentQuestionIndex(index + 1);
-                            }}
-                            onMouseOver={(e) =>
-                              (e.currentTarget.style.backgroundColor =
-                                "#1e40af")
-                            }
-                            onMouseOut={(e) =>
-                              (e.currentTarget.style.backgroundColor =
-                                "#2563eb")
-                            }
-                          >
-                            {option}
-                          </button>
-                        ))}
+                        {item.options &&
+                        Array.isArray(item.options) &&
+                        item.options.length > 0 ? (
+                          item.options.map((option, optionIndex) => (
+                            <button
+                              key={optionIndex}
+                              style={{
+                                backgroundColor: "#2563eb",
+                                color: "#ffffff",
+                                padding: "10px 24px",
+                                borderRadius: "12px",
+                                border: "none",
+                                fontSize: "14px",
+                                fontWeight: 500,
+                                cursor: "pointer",
+                                transition: "all 0.3s ease",
+                                boxShadow: "0 2px 6px rgba(0, 0, 0, 0.08)",
+                                marginBottom: "12px",
+                                textAlign: "center",
+                                width: "33%",
+                              }}
+                              onClick={() => {
+                                const updatedMessages = [...userMessages];
+                                updatedMessages[index] = option;
+                                setUserMessages(updatedMessages);
+                                setCurrentQuestionIndex(index + 1);
+                              }}
+                              onMouseOver={(e) =>
+                                (e.currentTarget.style.backgroundColor =
+                                  "#1e40af")
+                              }
+                              onMouseOut={(e) =>
+                                (e.currentTarget.style.backgroundColor =
+                                  "#2563eb")
+                              }
+                            >
+                              {option}
+                            </button>
+                          ))
+                        ) : (
+                          <> </> // If no options, do nothing
+                        )}
                       </Box>
+
+                      {/* Skip Button */}
+                      {item.skipOption &&
+                        !userMessages[index] &&
+                        !skipClicked && (
+                          <Box
+                            sx={{ display: "flex", justifyContent: "start" }}
+                          >
+                            <Button
+                              variant="outlined"
+                              onClick={handleSkip}
+                              sx={{
+                                marginLeft: "8%",
+                                borderRadius: "12px",
+                                padding: "10px 24px",
+                                backgroundColor: "#2563eb",
+                                color: "#ffffff",
+                                "&:hover": {
+                                  backgroundColor: "#1e40af",
+                                },
+                              }}
+                            >
+                              Skip
+                            </Button>
+                          </Box>
+                        )}
                     </Box>
                   )}
                 </Box>
 
-                {userMessages[index] && (
+                {/* Display User Messages */}
+                {item.errorMessage && userMessages[index] && (
                   <Box
                     sx={{
                       display: "flex",
@@ -305,6 +342,7 @@ const BotPreviewDialogPopup = ({
                   </Box>
                 )}
 
+                {/* Display Typing Indicator */}
                 {index === currentQuestionIndex && isTyping && (
                   <Box
                     sx={{

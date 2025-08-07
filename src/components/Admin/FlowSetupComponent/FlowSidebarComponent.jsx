@@ -88,7 +88,7 @@ const componentItems = [
     label: "Email",
     defaultLabel: "Enter your email ID",
     icon: <EmailIcon sx={{ fontSize: "35px", fontWeight: "bold" }} />,
-    type: "Email",
+    type: "email",
   },
   {
     label: (

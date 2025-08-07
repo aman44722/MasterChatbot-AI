@@ -35,6 +35,7 @@ const FlowCanvasComponent = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [language, setLanguage] = useState("en");
   const [openPreview, setOpenPreview] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
 
   const [botName, setBotName] = useState("Chatbot");
   const [textAlign, setTextAlign] = useState("textAlign");
@@ -290,6 +291,7 @@ const FlowCanvasComponent = () => {
         welcomeText={welcomeText}
         botAvatar={botLogo}
         textAlign={textAlign}
+        // pass setErrorMessage function
         // flexDirection={flexDirection}
         onUpdate={handleUpdate}
       />

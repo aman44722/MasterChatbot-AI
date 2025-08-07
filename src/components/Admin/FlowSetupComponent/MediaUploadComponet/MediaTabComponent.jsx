@@ -197,7 +197,14 @@ const MediaTabComponent = ({ media, setMedia }) => {
           Data not found. Please type another search term.
         </Typography>
       ) : (
-        <Grid container spacing={4}>
+        <Grid
+          sx={{
+            overflowY: "scroll",
+            height: "30vh",
+          }}
+          container
+          spacing={4}
+        >
           {gifs.map((gif, index) => (
             <Grid item xs={6} md={4} key={index}>
               <Item sx={{ position: "relative" }}>

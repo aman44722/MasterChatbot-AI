@@ -11,7 +11,6 @@ import {
   Tabs,
   Typography,
 } from "@mui/material";
-
 import React, { useEffect, useState } from "react";
 import MediaTabComponent from "../../MediaUploadComponet/MediaTabComponent";
 import CustomTextEditor from "./CustomTextEditor";
@@ -29,7 +28,6 @@ const EditQuestionPopup = ({
   openEdit,
   handleCloseEdit,
   editingItem,
-  // editingItem1,
   onUpdate,
 }) => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -37,26 +35,28 @@ const EditQuestionPopup = ({
   const [options, setOptions] = useState("New Option");
   const [flexDirection, setFlexDirection] = useState("column");
   const [media, setMedia] = useState({});
-  const [errorMessage, setErrorMessage] = useState(
-    "Please enter a valid answer"
-  );
+  const [skipOption, setSkipOption] = useState(false);
+  const [inputText, setInputText] = useState("Please enter a valid answer");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    // Set text and singleChoice if editingItem is available
-    if (editingItem?.text) {
-      setText(editingItem.text);
+    // Populate form data if editing an existing item
+    if (editingItem) {
+      setText(editingItem.text || "");
+      setOptions(editingItem.options || "New Option");
+      setFlexDirection(editingItem.flexDirection || "column");
+      setSkipOption(editingItem.skipOption || false); // Ensure boolean value
+      setMedia(editingItem.media || {});
+      setErrorMessage(editingItem.errorMessage || {});
     }
-    if (editingItem?.options) {
-      setOptions(editingItem.options);
-    }
-    if (editingItem?.flexDirection) {
-      setFlexDirection(editingItem.flexDirection);
-    }
-    if (editingItem?.media !== undefined) setMedia(editingItem.media);
   }, [editingItem]);
 
   const handleTabChange = (event, newValue) => {
     setTabIndex(newValue);
+  };
+
+  const handleSwitchChange = (event) => {
+    setSkipOption(event.target.checked); // Update skipOption state when switch toggles
   };
 
   const handleSave = () => {
@@ -69,11 +69,9 @@ const EditQuestionPopup = ({
     // Check if options is an array or string and validate accordingly
     if (Array.isArray(options)) {
       if (options.some((option) => option.trim() === "")) {
-        setErrorMessage("Question options cannot contain empty values");
         return;
       }
     } else if (typeof options === "string" && options.trim() === "") {
-      setErrorMessage("Question options cannot be empty");
       return;
     }
 
@@ -82,14 +80,18 @@ const EditQuestionPopup = ({
       ...editingItem,
       text,
       options,
+      skipOption, // Pass updated skipOption state
       flexDirection,
       media: media || "", // Ensure empty string is sent if removed
+      errorMessage,
     });
 
     console.log("options - ", options);
     console.log("flexDirection - ", flexDirection);
     console.log("text - ", text);
     console.log("media - ", media);
+    console.log("skipOption - ", skipOption);
+    console.log("errorMessage - ", errorMessage);
 
     handleCloseEdit();
   };
@@ -117,39 +119,25 @@ const EditQuestionPopup = ({
           <Box>
             {editingItem?.type === "question" ? (
               <QuestionTab
+                skipOption={skipOption} // Pass the current skipOption state
+                setSkipOption={setSkipOption} // Pass the setter function to handle updates
                 errorMessage={errorMessage}
                 setErrorMessage={setErrorMessage}
               />
             ) : editingItem?.type === "single_choice" ? (
               <Box>
                 <ShowOptionsButtons
-                  flexDirection={flexDirection} // Pass the current flexDirection
-                  setFlexDirection={setFlexDirection} // Pass the setter function to handle updates
-                  errorMessage={errorMessage}
-                  setErrorMessage={setErrorMessage}
+                  flexDirection={flexDirection}
+                  setFlexDirection={setFlexDirection}
                 />
-                <OptionList
-                  value={options}
-                  onChange={setOptions}
-                  errorMessage={errorMessage}
-                  setErrorMessage={setErrorMessage}
-                />
+                <OptionList value={options} onChange={setOptions} />
               </Box>
             ) : editingItem?.type === "email" ? (
-              <EmailTab
-                errorMessage={errorMessage}
-                setErrorMessage={setErrorMessage}
-              />
+              <EmailTab skipOption={skipOption} setSkipOption={setSkipOption} />
             ) : editingItem?.type === "multiple_choice" ? (
-              <MultipleChoiceTab
-                errorMessage={errorMessage}
-                setErrorMessage={setErrorMessage}
-              />
+              <MultipleChoiceTab />
             ) : editingItem?.type === "mobile_number" ? (
-              <MobileNumberTab
-                errorMessage={errorMessage}
-                setErrorMessage={setErrorMessage}
-              />
+              <MobileNumberTab />
             ) : editingItem?.type === "number" ? (
               <NumberTab />
             ) : (
@@ -157,7 +145,10 @@ const EditQuestionPopup = ({
                 sx={{ display: "flex", alignItems: "center", mb: 2, gap: 2 }}
               >
                 <Typography>Do Not Give Skip Option</Typography>
-                <Switch />
+                <Switch
+                  checked={skipOption} // Toggle state based on current skipOption value
+                  onChange={handleSwitchChange} // Call the handleSwitchChange to update the skipOption
+                />
               </Box>
             )}
           </Box>
