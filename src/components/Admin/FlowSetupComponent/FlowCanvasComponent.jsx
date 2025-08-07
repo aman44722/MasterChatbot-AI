@@ -122,12 +122,13 @@ const FlowCanvasComponent = () => {
     const userPayload = {
       flowSetupSetting: {
         question: {
-          list: droppedItems, // Send the updated list of questions
+          list: JSON.parse(JSON.stringify(droppedItems)), // Serialize the droppedItems correctly
         },
       },
     };
+
     try {
-      const response = await updateUserDetails(userPayload);
+      const response = await updateUserDetails(userID, token, userPayload);
 
       if (response) {
         toast.success("Saved successfully");

@@ -68,27 +68,19 @@ export const EditChatBotSettings = async (payload) => {
 };
 
 
-export const updateUserDetails = async (user) => {
-    const userID = localStorage.getItem("userId");
-    const token = JSON.parse(localStorage.getItem("user"))?.token;
-
-    // Check if userId or token is missing
-    if (!userID || !token) {
-        throw new Error("Missing userId or token");
-    }
+export const updateUserDetails = async (userID, token, userPayload) => {
 
     try {
         const response = await axios.put(
-            `${API_URL}/user/${userID}/layout-settings`, // Ensure string interpolation is correct
-            user,
+            `${API_URL}/user/${userID}/layout-settings`, // Correct endpoint
+            userPayload, // Send updated user data
             {
                 headers: {
-                    Authorization: `Bearer ${token}`, // Correct string interpolation for token
+                    Authorization: `Bearer ${token}`, // Add Bearer token
                     'Content-Type': 'application/json',
                 },
             }
         );
-
         return response.data;
     } catch (error) {
         console.error("Error updating user details:", error);
