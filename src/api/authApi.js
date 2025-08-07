@@ -1,6 +1,9 @@
 import axios from "axios";
 
 const API_URL = "http://localhost:5000/api/auth";
+const token = JSON.parse(localStorage.getItem("user"))?.token;
+const userID = localStorage.getItem("userId");
+
 
 // Register User
 export const registerUser = async (payload) => {
@@ -25,8 +28,6 @@ export const loginUser = async (payload) => {
 // Fetch User Data by ID
 export const fetchUserById = async (userId) => {
     try {
-        const token = JSON.parse(localStorage.getItem("user"))?.token;
-
         const response = await axios.get(`${API_URL}/user/${userId}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -42,8 +43,6 @@ export const fetchUserById = async (userId) => {
 // Update Bot Settings (PUT method using localStorage for token & userId)
 export const EditChatBotSettings = async (payload) => {
     try {
-        const userID = localStorage.getItem("userId");
-        const token = JSON.parse(localStorage.getItem("user"))?.token;
 
         if (!userID || !token) {
             throw new Error("Missing userId or token in localStorage");
@@ -68,7 +67,15 @@ export const EditChatBotSettings = async (payload) => {
 };
 
 
+<<<<<<< HEAD
 export const updateUserDetails = async (userID, token, userPayload) => {
+=======
+export const updateUserDetails = async (user) => {
+    // Check if userId or token is missing
+    if (!userID || !token) {
+        throw new Error("Missing userId or token");
+    }
+>>>>>>> fcc1f253ba2405578f6f4c6e1218533c13bbd2e4
 
     try {
         const response = await axios.put(
@@ -88,9 +95,24 @@ export const updateUserDetails = async (userID, token, userPayload) => {
     }
 };
 
+// Change Password
+export const changePassword = async (oldPassword, newPassword) => {
+    try {
 
-// <<<<<<< HEAD
-// =======
+        const response = await axios.put(
+            `${API_URL}/change-password`, // ✅ Using POST as you fixed on backend
+            { oldPassword, newPassword },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
 
+        return response.data; // { message: "Password updated successfully" }
+    } catch (error) {
+        throw error.response?.data?.message || "Error changing password";
+    }
+};
 
-// >>>>>>> e0bbdd5f04cef6f6900591211c52b8a61710031f
