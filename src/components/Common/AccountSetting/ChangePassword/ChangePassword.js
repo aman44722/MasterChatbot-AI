@@ -1,72 +1,113 @@
-import '../../../../pages/SetupPage/AdminSettings.css';
-import { fetchUserById, updateUserDetails } from '../../../../api/authApi';
-import { useEffect, useState } from 'react';
-import { Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { Typography, Button, TextField } from '@mui/material';
+import Swal from 'sweetalert2';
+import { changePassword } from '../../../../api/authApi';
 
 export default function ChangePassword() {
-    const [password, setPassword] = useState({
+    const [passwordData, setPasswordData] = useState({
         oldPassword: '',
         newPassword: '',
         confirmPassword: '',
+        newPassword: '',
     });
 
-    const labelStyle = {
-        display: "flex",
-        alignItems: "center",
-        fontSize: "13px",
-        color: "#999",
-        fontWeight: 600,
+    const [message, setMessage] = useState('');
+    const [messageColor, setMessageColor] = useState('green');
+
+    const handleChange = (e) => {
+        setPasswordData({
+            ...passwordData,
+            [e.target.name]: e.target.value,
+        });
     };
 
-    const inputStyle = {
-        width: "100%",
-        padding: "10px 12px",
-        border: "1px solid #ddd",
-        borderRadius: "8px",
-        fontSize: "14px",
-        outline: "none",
-        boxSizing: "border-box",
-        marginTop: '15px'
-    };
-
-    // Put Api Call
     const handleUpdate = async () => {
-    };
+        const { oldPassword, newPassword, confirmPassword } = passwordData;
 
+        // Validation: Check all fields filled
+        if (!oldPassword || !newPassword || !confirmPassword) {
+            setMessageColor('red');
+            return setMessage('Please fill in all fields.');
+        }
+
+        // Validation: Password match
+        if (newPassword !== confirmPassword) {
+            setMessageColor('red');
+            return setMessage('New password and confirm password do not match.');
+        }
+
+        try {
+            console.log(`oldPassword - ${oldPassword}, newPassword - ${newPassword}`)
+            const response = await changePassword(oldPassword, newPassword);
+
+            // Show success alert and refresh after confirmation
+            Swal.fire({
+                icon: 'success',
+                title: 'Password Changed Successfully',
+                text: response.message || 'Your password has been updated.',
+                confirmButtonText: 'OK',
+            }).then(() => {
+                window.location.reload(); // Refresh page
+            });
+
+        } catch (error) {
+            console.error('Error changing password:', error);
+            setMessageColor('red');
+            setMessage(error?.message || 'Something went wrong. Please try again.');
+        }
+    };
 
     return (
-        <div
-            className="custom-scrollbar"
-            style={{
-                display: 'flex',
-                justifyContent: 'start',
-                gap: '40px',
-                width: '100%',
-                boxShadow: '0px 4px 20px #d8d8d8',
-                borderRadius: '20px',
-                borderRight: '1px solid #eee',
-                overflowY: 'auto',
-                width: '50%',
-                padding: "20px"
-            }}
-        >
-            <div className="mock-browser-layout" style={{ display: 'flex', flexDirection: 'column', width: '80%', gap: '30px' }}>
-                <Typography variant='h5'><strong>Change Password</strong></Typography>
-                <div>
-                    <label style={labelStyle} htmlFor="oldPassword">Old Password</label>
-                    <input style={inputStyle} type="password" id="oldPassword" value={password.oldPassword} onChange={(e) => setPassword({ ...password, oldPassword: e.target.value })} />
-                </div>
-                <div>
-                    <label style={labelStyle} htmlFor="newPassword">New Password</label>
-                    <input style={inputStyle} type="password" id="newPassword" value={password.newPassword} onChange={(e) => setPassword({ ...password, newPassword: e.target.value })} />
-                </div><div>
-                    <label style={labelStyle} htmlFor="currentPassword">Current Password</label>
-                    <input style={inputStyle} type="password" id="currentPassword" value={password.currentPassword} onChange={(e) => setPassword({ ...password, currentPassword: e.target.value })} />
-                </div>
-                <button onClick={handleUpdate} style={{ background: '#4F46E5', color: '#fff', padding: '10px 25px', borderRadius: '8px', border: 'none' }} type="button">Update</button>
+        <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
+            <Typography variant="h5" gutterBottom>
+                Change Password
+            </Typography>
 
-                {/* <button style={{ background: '#4F46E5', color: '#fff', padding: '10px 25px', borderRadius: '8px', border: 'none' }} type="button">Save</button> */}
-            </div>
-        </div >
+            <TextField
+                label="Old Password"
+                type="password"
+                name="oldPassword"
+                value={passwordData.oldPassword}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+            />
+
+            <TextField
+                label="New Password"
+                type="password"
+                name="newPassword"
+                value={passwordData.newPassword}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+            />
+
+            <TextField
+                label="Confirm New Password"
+                type="password"
+                name="confirmPassword"
+                value={passwordData.confirmPassword}
+                onChange={handleChange}
+                fullWidth
+                margin="normal"
+            />
+
+            {message && (
+                <Typography style={{ color: messageColor, marginTop: '10px' }}>
+                    {message}
+                </Typography>
+            )}
+
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={handleUpdate}
+                style={{ marginTop: '20px' }}
+                fullWidth
+            >
+                Update Password
+            </Button>
+        </div>
     );
 }
