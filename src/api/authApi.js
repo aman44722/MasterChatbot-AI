@@ -67,15 +67,15 @@ export const EditChatBotSettings = async (payload) => {
 };
 
 
-<<<<<<< HEAD
+// <<<<<<< HEAD
 export const updateUserDetails = async (userID, token, userPayload) => {
-=======
-export const updateUserDetails = async (user) => {
-    // Check if userId or token is missing
-    if (!userID || !token) {
-        throw new Error("Missing userId or token");
-    }
->>>>>>> fcc1f253ba2405578f6f4c6e1218533c13bbd2e4
+    // =======
+    // export const updateUserDetails = async (user) => {
+    //     // Check if userId or token is missing
+    //     if (!userID || !token) {
+    //         throw new Error("Missing userId or token");
+    //     }
+    // >>>>>>> fcc1f253ba2405578f6f4c6e1218533c13bbd2e4
 
     try {
         const response = await axios.put(
