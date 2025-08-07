@@ -318,7 +318,7 @@ const BotPreviewDialogPopup = ({ open, onClose, droppedItems }) => {
                 </Box>
 
                 {/* Display User Messages */}
-                {item.errorMessage && userMessages[index] && (
+                {userMessages[index] && (
                   <Box
                     sx={{
                       display: "flex",

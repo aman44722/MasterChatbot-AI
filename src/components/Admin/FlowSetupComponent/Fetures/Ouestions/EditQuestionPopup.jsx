@@ -47,7 +47,6 @@ const EditQuestionPopup = ({
       setFlexDirection(editingItem.flexDirection || "column");
       setSkipOption(editingItem.skipOption || false); // Ensure boolean value
       setMedia(editingItem.media || {});
-      setErrorMessage(editingItem.errorMessage || {});
     }
   }, [editingItem]);
 
@@ -83,7 +82,6 @@ const EditQuestionPopup = ({
       skipOption, // Pass updated skipOption state
       flexDirection,
       media: media || "", // Ensure empty string is sent if removed
-      errorMessage,
     });
 
     console.log("options - ", options);
@@ -91,7 +89,6 @@ const EditQuestionPopup = ({
     console.log("text - ", text);
     console.log("media - ", media);
     console.log("skipOption - ", skipOption);
-    console.log("errorMessage - ", errorMessage);
 
     handleCloseEdit();
   };
@@ -132,8 +129,8 @@ const EditQuestionPopup = ({
                 />
                 <OptionList value={options} onChange={setOptions} />
               </Box>
-            ) : editingItem?.type === "email" ? (
-              <EmailTab skipOption={skipOption} setSkipOption={setSkipOption} />
+            ) : editingItem?.type === "email_feild" ? (
+              <EmailTab />
             ) : editingItem?.type === "multiple_choice" ? (
               <MultipleChoiceTab />
             ) : editingItem?.type === "mobile_number" ? (
