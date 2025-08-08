@@ -43,7 +43,7 @@ const EditQuestionPopup = ({
     // Populate form data if editing an existing item
     if (editingItem) {
       setText(editingItem.text || "");
-      setOptions(editingItem.options || "New Option");
+      setOptions(editingItem.options);
       setFlexDirection(editingItem.flexDirection || "column");
       setSkipOption(editingItem.skipOption || false); // Ensure boolean value
       setMedia(editingItem.media || {});
