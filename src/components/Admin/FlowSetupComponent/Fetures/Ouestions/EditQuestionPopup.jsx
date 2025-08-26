@@ -23,6 +23,7 @@ import MobileNumberTab from "./BasicTabs/MobileNumberTab/MobileNumberTab";
 // import SingleChoiceTab from "./BasicTabs/SingleChoiceTab/SingleChoiceTab";
 import OptionList from "./BasicTabs/SingleChoiceTab/Options/OptionInputRow";
 import ShowOptionsButtons from "./BasicTabs/SingleChoiceTab/Options/ShowOptionsButtons";
+import picImg from "./picture.svg";
 
 const EditQuestionPopup = ({
   openEdit,
@@ -34,7 +35,7 @@ const EditQuestionPopup = ({
   const [text, setText] = useState("");
   const [options, setOptions] = useState("New Option");
   const [flexDirection, setFlexDirection] = useState("column");
-  const [media, setMedia] = useState({});
+  const [media, setMedia] = useState({ picImg });
   const [skipOption, setSkipOption] = useState(false);
   const [inputText, setInputText] = useState("Please enter a valid answer");
   const [errorMessage, setErrorMessage] = useState("");
@@ -130,7 +131,12 @@ const EditQuestionPopup = ({
                 <OptionList value={options} onChange={setOptions} />
               </Box>
             ) : editingItem?.type === "email_feild" ? (
-              <EmailTab />
+              <EmailTab
+                skipOption={skipOption} // Pass the current skipOption state
+                setSkipOption={setSkipOption} // Pass the setter function to handle updates
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
+              />
             ) : editingItem?.type === "multiple_choice" ? (
               <MultipleChoiceTab />
             ) : editingItem?.type === "mobile_number" ? (

@@ -67,20 +67,8 @@ export const EditChatBotSettings = async (payload) => {
 };
 
 
-// <<<<<<< HEAD
-
+// update user
 export const updateUserDetails = async (userID, token, userPayload) => {
-    // =======
-    // export const updateUserDetails = async (user) => {
-    //     const userID = localStorage.getItem("userId");
-    //     const token = JSON.parse(localStorage.getItem("user"))?.token;
-
-    //     // Check if userId or token is missing
-    //     if (!userID || !token) {
-    //         throw new Error("Missing userId or token");
-    //     }
-    // >>>>>>> 07dd9d867d6cb58bba2d7f766492c04d6cd63ca9
-
     try {
         const response = await axios.put(
             `${API_URL}/user/${userID}/layout-settings`, // Correct endpoint

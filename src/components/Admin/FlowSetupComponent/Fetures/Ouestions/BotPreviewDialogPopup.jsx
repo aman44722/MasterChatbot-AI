@@ -30,8 +30,9 @@ const BotPreviewDialogPopup = ({ open, onClose, droppedItems }) => {
   const [inputText, setInputText] = useState("");
   const [userMessages, setUserMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [skipClicked, setSkipClicked] = useState(false);
-
+  const [skipClicked, setSkipClicked] = useState(
+    new Array(droppedItems.length).fill(false)
+  ); // Track skip status for each question
   const handleSend = () => {
     if (inputText.trim() === "") return;
     const updated = [...userMessages];
@@ -46,7 +47,9 @@ const BotPreviewDialogPopup = ({ open, onClose, droppedItems }) => {
   };
 
   const handleSkip = () => {
-    setSkipClicked(true); // Set the skip as clicked
+    const updatedSkipStatus = [...skipClicked];
+    updatedSkipStatus[currentQuestionIndex] = true; // Mark this question as skipped
+    setSkipClicked(updatedSkipStatus);
     setIsTyping(true); // Start typing animation immediately for skip
     setTimeout(() => {
       setCurrentQuestionIndex((prev) => prev + 1); // Skip to the next question
@@ -291,7 +294,7 @@ const BotPreviewDialogPopup = ({ open, onClose, droppedItems }) => {
                       {/* Skip Button */}
                       {item.skipOption &&
                         !userMessages[index] &&
-                        !skipClicked && (
+                        !skipClicked[index] && (
                           <Box
                             sx={{ display: "flex", justifyContent: "start" }}
                           >

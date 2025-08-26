@@ -14,7 +14,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import picImg from "./picture.svg"; // placeholder image
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 // Replace with your Giphy API Key
 const GIPHY_API_KEY = "lADTumhthnqlLrBtIItDmB5PFDCns3iy";
@@ -32,22 +32,25 @@ const Item = styled(Box)(({ theme }) => ({
   },
 }));
 
-const MediaTabComponent = ({ media, setMedia }) => {
-  const [selectedGifUrl, setSelectedGifUrl] = useState(media || "");
+const MediaTabComponent = ({ media, setMedia, questionChanged }) => {
+  const [selectedGifUrl, setSelectedGifUrl] = useState(media ? media : picImg);
   const [searchTerm, setSearchTerm] = useState("good morning");
   const [gifs, setGifs] = useState([]);
   const [offset, setOffset] = useState(0);
-  const [typingTimeout, setTypingTimeout] = useState(null);
-  const [loading, setLoading] = useState(false); // State for loading status
-  const [noResults, setNoResults] = useState(false); // State for no results message
+  const [loading, setLoading] = useState(false);
+  const [noResults, setNoResults] = useState(false);
 
   useEffect(() => {
+    if (questionChanged) {
+      setMedia(""); // Clear media when the question changes
+      setSelectedGifUrl(""); // Reset selected GIF
+    }
     fetchGifs(false, 0);
-  }, []);
+  }, [questionChanged]);
 
   const fetchGifs = async (append = false, customOffset = 0) => {
     try {
-      setLoading(true); // Set loading to true when fetching
+      setLoading(true);
       const response = await axios.get("https://api.giphy.com/v1/gifs/search", {
         params: {
           api_key: GIPHY_API_KEY,
@@ -59,26 +62,25 @@ const MediaTabComponent = ({ media, setMedia }) => {
 
       const newGifs = response.data.data;
 
-      // If no GIFs are found, set noResults to true
       if (newGifs.length === 0) {
         setNoResults(true);
       } else {
-        setNoResults(false); // Reset noResults when there are results
+        setNoResults(false);
       }
 
-      // Avoid duplicates when appending
       setGifs((prev) => {
         const prevIds = new Set(prev.map((gif) => gif.id));
         const uniqueNew = newGifs.filter((gif) => !prevIds.has(gif.id));
         return append ? [...prev, ...uniqueNew] : newGifs;
       });
 
-      setLoading(false); // Stop loading when GIFs are fetched
+      setLoading(false);
     } catch (err) {
       console.error("GIF fetch failed:", err);
-      setLoading(false); // Stop loading on error
+      setLoading(false);
     }
   };
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -93,10 +95,10 @@ const MediaTabComponent = ({ media, setMedia }) => {
 
         const reader = new FileReader();
         reader.onloadend = () => {
-          setMedia(reader.result); // Updating media state with the selected file
-          setSelectedGifUrl(""); // Clear the selected GIF URL
+          setMedia(reader.result);
+          setSelectedGifUrl("");
         };
-        reader.readAsDataURL(file); // Reading the file
+        reader.readAsDataURL(file);
       };
     }
   };
@@ -105,9 +107,7 @@ const MediaTabComponent = ({ media, setMedia }) => {
     const value = e.target.value;
     setSearchTerm(value);
     setOffset(0);
-    clearTimeout(typingTimeout);
-    const timeout = setTimeout(() => fetchGifs(false, 0), 500);
-    setTypingTimeout(timeout);
+    fetchGifs(false, 0);
   };
 
   const handleLoadMore = () => {
@@ -133,14 +133,6 @@ const MediaTabComponent = ({ media, setMedia }) => {
           position: "relative",
         }}
       >
-        <label htmlFor="upload-image" style={{ cursor: "pointer" }}>
-          <img
-            src={media || picImg}
-            alt="upload"
-            style={{ width: "60px", height: "60px", marginBottom: "10px" }}
-          />
-          <Typography>Upload max 1024×1024 px, under 5MB</Typography>
-        </label>
         <input
           id="upload-image"
           type="file"
@@ -149,19 +141,29 @@ const MediaTabComponent = ({ media, setMedia }) => {
           onChange={handleFileChange}
         />
         {media && (
-          <IconButton
-            size="small"
-            onClick={handleRemoveMedia}
-            sx={{
-              position: "absolute",
-              top: "8px",
-              right: "8px",
-              background: "#fff",
-              boxShadow: "0 0 4px rgba(0,0,0,0.2)",
-            }}
-          >
-            <CloseIcon fontSize="small" />
-          </IconButton>
+          <>
+            <label htmlFor="upload-image" style={{ cursor: "pointer" }}>
+              <img
+                src={media || picImg} // Fallback to picImg if media is empty or invalid
+                alt="upload"
+                style={{ width: "60px", height: "60px", marginBottom: "10px" }}
+              />
+              <Typography>Upload max 1024×1024 px, under 5MB</Typography>
+            </label>
+            <IconButton
+              size="small"
+              onClick={handleRemoveMedia}
+              sx={{
+                position: "absolute",
+                top: "8px",
+                right: "8px",
+                background: "#fff",
+                boxShadow: "0 0 4px rgba(0,0,0,0.2)",
+              }}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </>
         )}
       </Box>
 
@@ -198,10 +200,7 @@ const MediaTabComponent = ({ media, setMedia }) => {
         </Typography>
       ) : (
         <Grid
-          sx={{
-            overflowY: "scroll",
-            height: "30vh",
-          }}
+          sx={{ overflowY: "scroll", height: "30vh" }}
           container
           spacing={4}
         >
