@@ -18,13 +18,19 @@ import AuthForm from './components/LoginRegister';
 import PrivateRoute from './PrivateRoute/PrivateRoute';
 import Account from './pages/Account';
 
+// ✅ Import your home page component
+import HomePage from './pages/Home';
+
 function App() {
   return (
     <Routes>
-      {/* ✅ Protected Layout (Sidebar/Header) */}
-      <Route path="/" element={<Layout />}>
+      {/* ✅ PUBLIC HomePage — no layout, no auth */}
+      <Route path="/" element={<HomePage />} />
+
+      {/* ✅ Protected Layout routes (Dashboard, etc.) */}
+      <Route path="/app" element={<Layout />}>
         <Route element={<PrivateRoute />}>
-          <Route index element={<Dashboard />} /> {/* matches "/" */}
+          <Route index element={<Dashboard />} /> {/* matches "/app" */}
           <Route path="chats" element={<Chats />} />
           <Route path="users" element={<Users />} />
           <Route path="answers" element={<Answers />} />
@@ -38,7 +44,7 @@ function App() {
         </Route>
       </Route>
 
-      {/* ✅ Public routes (No Layout/Header/Sidebar) */}
+      {/* ✅ Public route — user message */}
       <Route path="/usertest/:chatId" element={<UserMessage />} />
       <Route path="/login" element={<AuthForm />} />
     </Routes>
