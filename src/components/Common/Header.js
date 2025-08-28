@@ -15,6 +15,7 @@ import {
 import { KeyboardArrowDown } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchUserById } from '../../api/authApi';
+import logo from "../../assets/images/bot-logo-white.png";
 // Importing the new fetch function
 
 const Header = () => {
@@ -48,7 +49,7 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/login");
+    navigate("/");
   };
 
   const handleStatusChange = (event) => {
@@ -57,44 +58,44 @@ const Header = () => {
 
   return (
     <AppBar
+
       position="fixed"
       sx={{
+        height: '60px',
+        background: '#F6F9FF',
+        marginLeft: '2px',
         width: '100%',
         zIndex: (theme) => theme.zIndex.drawer + 1,
-        backgroundColor: '#3ca344',
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+        boxShadow: '2px 1px 0px #F1f1f1'
       }}
     >
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
-          🧠 ChatBot Admin Panel
-        </Typography>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'end' }}>
+
 
         {user && (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Avatar
               sx={{
-                bgcolor: '#e2e8f0',
-                color: '#3ca344',
+                bgcolor: '#4F46E5',
                 width: 40,
                 height: 40,
                 fontWeight: 600,
               }}
             >
               <MenuItem component={Link} to="/account">
-              {user.fullName?.charAt(0).toUpperCase() || 'A'}
+                {user.fullName?.charAt(0).toUpperCase() || 'A'}
               </MenuItem>
             </Avatar>
             <Box sx={{ lineHeight: 1 }}>
-              <Typography fontWeight={600} fontSize="14px" color="#fff">
+              <Typography fontWeight={600} fontSize="14px" color="#000">
                 {user.fullName || 'Admin'}
               </Typography>
-              <Typography fontSize="12px" color="#f0fdf4">
+              <Typography fontSize="12px" color="#5e5e5eff">
                 {user.email}
               </Typography>
             </Box>
             <IconButton onClick={handleMenuOpen}>
-              <KeyboardArrowDown sx={{ color: '#fff' }} />
+              <KeyboardArrowDown sx={{ color: '#5e5e5eff' }} />
             </IconButton>
             <Menu
               anchorEl={anchorEl}

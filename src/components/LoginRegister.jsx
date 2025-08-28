@@ -95,10 +95,10 @@ const AuthForm = () => {
 
       if (isLogin) {
         login(response.data);
-        navigate("/");
+        navigate("/dashboard");
       } else {
         login(response.data); // ✅ now saving after register too
-        navigate("/"); // ✅ same redirect as login
+        navigate("/dashboard"); // ✅ same redirect as login
       }
     } catch (err) {
       setError(err?.response?.data?.message || "An error occurred");

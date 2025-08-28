@@ -1,8 +1,7 @@
 // App.js
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Common/Layout';
-
 import Dashboard from './pages/Dashboard';
 import Chats from './pages/Chats';
 import Users from './pages/Users';
@@ -17,20 +16,41 @@ import FlowSetup from './pages/FlowSetupPage/FlowSetup';
 import AuthForm from './components/LoginRegister';
 import PrivateRoute from './PrivateRoute/PrivateRoute';
 import Account from './pages/Account';
+import './App.css';
 
 // ✅ Import your home page component
 import HomePage from './pages/Home';
+import PublicLayout from './components/Common/PublicLayout';
 
 function App() {
   return (
     <Routes>
-      {/* ✅ PUBLIC HomePage — no layout, no auth */}
-      <Route path="/" element={<HomePage />} />
+      {/* Public */}
+      <Route element={<PublicLayout />}>
+        <Route index element={<HomePage />} />                 {/* "/" */}
+        {/* "/login" */}
+        <Route path="usertest/:chatId" element={<UserMessage />} />
+      </Route>
+      <Route path="login" element={<AuthForm />} />
+      {/* Redirects for top-level paths */}
+      <Route path="/chats" element={<Navigate to="/app/chats" replace />} />
+      <Route path="/users" element={<Navigate to="/app/users" replace />} />
+      <Route path="/answers" element={<Navigate to="/app/answers" replace />} />
+      <Route path="/leads" element={<Navigate to="/app/leads" replace />} />
+      <Route path="/analytics" element={<Navigate to="/app/analytics" replace />} />
+      <Route path="/settings" element={<Navigate to="/app/settings" replace />} />
+      <Route path="/setup" element={<Navigate to="/app/setup" replace />} />
+      <Route path="/flow-setup" element={<Navigate to="/app/flow-setup" replace />} />
+      <Route path="/logout" element={<Navigate to="/app/logout" replace />} />
+      <Route path="/account" element={<Navigate to="/app/account" replace />} />
+      <Route path="/dashboard" element={<Navigate to="/app/dashboard" replace />} />
 
-      {/* ✅ Protected Layout routes (Dashboard, etc.) */}
+      {/* zarurat ke hisaab se aur bhi redirects add kar sakte ho */}
+
+      {/* Protected under /app */}
       <Route path="/app" element={<Layout />}>
         <Route element={<PrivateRoute />}>
-          <Route index element={<Dashboard />} /> {/* matches "/app" */}
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="chats" element={<Chats />} />
           <Route path="users" element={<Users />} />
           <Route path="answers" element={<Answers />} />
@@ -41,12 +61,12 @@ function App() {
           <Route path="flow-setup" element={<FlowSetup />} />
           <Route path="logout" element={<Logout />} />
           <Route path="account" element={<Account />} />
+
         </Route>
       </Route>
 
-      {/* ✅ Public route — user message */}
-      <Route path="/usertest/:chatId" element={<UserMessage />} />
-      <Route path="/login" element={<AuthForm />} />
+      {/* 404 */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

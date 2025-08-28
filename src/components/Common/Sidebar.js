@@ -24,7 +24,7 @@ import BuildIcon from '@mui/icons-material/Build';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import SwapCallsIcon from '@mui/icons-material/SwapCalls';
 import DownloadIcon from '@mui/icons-material/Download';
-
+import logo from "../../assets/images/bot-logo-blue.png";
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
@@ -39,63 +39,87 @@ const Sidebar = () => {
   const menuItems = [
     {
       text: 'Dashboard',
-      icon: <DashboardIcon fontSize='10px' />,
-      path: '/',
+      icon: <DashboardIcon fontSize='10px' sx={{
+        background: '#4F46E5', borderRadius: '20px', width: '20px', height: '20px', padding: '3px'
+      }} />,
+      path: '/dashboard',
     },
     {
       text: 'SetUp',
-      icon: <BuildIcon fontSize='10px' />,
+      icon: <BuildIcon fontSize='10px' sx={{
+        background: '#4F46E5', borderRadius: '20px', width: '20px', height: '20px', padding: '3px'
+      }} />,
       children: [
         {
           text: 'View Setup',
-          icon: <VisibilityIcon fontSize='10px' />,
+          icon: <VisibilityIcon fontSize='10px' sx={{
+            background: '#4F46E5', borderRadius: '20px', width: '20px', height: '20px', padding: '3px'
+          }} />,
           path: '/setup',
         },
         {
           text: 'Flow Setup',
-          icon: <SwapCallsIcon fontSize='10px' />,
+          icon: <SwapCallsIcon fontSize='10px' sx={{
+            background: '#4F46E5', borderRadius: '20px', width: '20px', height: '20px', padding: '3px'
+          }} />,
           path: '/flow-setup',
         },
         {
           text: 'Install',
-          icon: <DownloadIcon fontSize='10px' />,
+          icon: <DownloadIcon fontSize='10px' sx={{
+            background: '#4F46E5', borderRadius: '20px', width: '20px', height: '20px', padding: '3px'
+          }} />,
           path: '/setup/install',
         },
       ],
     },
     {
       text: 'Chats',
-      icon: <ChatIcon fontSize='10px' />,
+      icon: <ChatIcon fontSize='10px' sx={{
+        background: '#4F46E5', borderRadius: '20px', width: '20px', height: '20px', padding: '3px'
+      }} />,
       path: '/chats',
     },
     {
       text: 'Users',
-      icon: <PeopleIcon fontSize='10px' />,
+      icon: <PeopleIcon fontSize='10px' sx={{
+        background: '#4F46E5', borderRadius: '20px', width: '20px', height: '20px', padding: '3px'
+      }} />,
       path: '/users',
     },
     {
       text: 'Bot Answers',
-      icon: <SmartToyIcon fontSize='10px' />,
+      icon: <SmartToyIcon fontSize='10px' sx={{
+        background: '#4F46E5', borderRadius: '20px', width: '20px', height: '20px', padding: '3px'
+      }} />,
       path: '/answers',
     },
     {
       text: 'Leads',
-      icon: <AssignmentIcon fontSize='10px' />,
+      icon: <AssignmentIcon fontSize='10px' sx={{
+        background: '#4F46E5', borderRadius: '20px', width: '20px', height: '20px', padding: '3px'
+      }} />,
       path: '/leads',
     },
     {
       text: 'Analytics',
-      icon: <BarChartIcon fontSize='10px' />,
+      icon: <BarChartIcon fontSize='10px' sx={{
+        background: '#4F46E5', borderRadius: '20px', width: '20px', height: '20px', padding: '3px'
+      }} />,
       path: '/analytics',
     },
     {
       text: 'Settings',
-      icon: <SettingsIcon fontSize='10px' />,
+      icon: <SettingsIcon fontSize='10px' sx={{
+        background: '#4F46E5', borderRadius: '20px', width: '20px', height: '20px', padding: '3px'
+      }} />,
       path: '/settings',
     },
     {
       text: 'Logout',
-      icon: <LogoutIcon fontSize='10px' />,
+      icon: <LogoutIcon fontSize='10px' sx={{
+        background: '#4F46E5', borderRadius: '20px', width: '20px', height: '20px', padding: '3px'
+      }} />,
       path: '/logout',
     },
   ];
@@ -108,17 +132,24 @@ const Sidebar = () => {
       variant="permanent"
       anchor="left"
       sx={{
+        position: "fixed",
         width: 180,
+        zIndex: '10000',
+        textAlign: 'center',
         flexShrink: 0,
         '& .MuiDrawer-paper': {
           width: 180,
           boxSizing: 'border-box',
-          boxShadow: '0px 4px 20px #ddd',
-          backgroundColor: '#fff',
+          backgroundColor: '#F6F9FF',
+          border: "none",
+          boxShadow: '2px 1px 0px #fff'
         },
       }}
     >
-      <List sx={{ pt: '80px', }}>
+      <div className="logo">
+        <img style={{ width: "100px", }} src={logo} alt="Smart Bot Logo" />
+      </div>
+      <List sx={{}}>
         {menuItems.map((item) => (
           <React.Fragment key={item.text}>
             <ListItem
@@ -130,18 +161,18 @@ const Sidebar = () => {
                   : navigate(item.path)
               }
               sx={{
-                cursor:'pointer',
+                cursor: 'pointer',
                 transition: 'ease-in-out',
-                borderLeft: location.pathname === item.path ? '3px solid #006C74' : 'transparent',
-                color: location.pathname === item.path ? '#006C74' : '#000',
+                borderLeft: location.pathname === item.path ? '3px solid #4F46E5' : 'transparent',
+                color: location.pathname === item.path ? '#4F46E5' : '#000',
                 '&:hover': {
-                  backgroundColor: '#e0f7fa',
+                  backgroundColor: '#fff',
                 },
               }}
 
             >
               <ListItemIcon sx={{
-                color: '#006C74',
+                color: '#fff',
               }}>{item.icon}</ListItemIcon>
               <ListItemText sx={{
                 fontSize: '15px'
@@ -158,16 +189,17 @@ const Sidebar = () => {
                       button
                       key={child.text}
                       sx={{
-                        pl: 4, cursor:'pointer',
-                         borderLeft: location.pathname === child.path ? '3px solid #006C74' : 'transparent',
-                '&:hover': {
-                  backgroundColor: '#e0f7fa',
-                }, color: location.pathname === child.path ? '#006C74' : '#000',
+
+                        pl: 4, cursor: 'pointer',
+                        borderLeft: location.pathname === child.path ? '3px solid #4F46E5' : 'transparent',
+                        '&:hover': {
+                          backgroundColor: '#e0f7fa',
+                        }, color: location.pathname === child.path ? '#4F46E5' : '#000',
                       }}
                       onClick={() => navigate(child.path)}
                     >
                       <ListItemIcon sx={{
-                        color: '#006C74'
+                        color: '#fff'
                       }}>{child.icon}</ListItemIcon>
                       <ListItemText primary={child.text} />
                     </ListItem>

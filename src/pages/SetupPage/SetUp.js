@@ -98,14 +98,14 @@ const SetUp = () => {
         sx={{
           width: '30%',
           boxShadow: '0px 4px 20px #d8d8d8',
-          borderRadius: '20px',
+          borderBottomLeftRadius: '20px',
           borderRight: '1px solid #eee',
           overflowY: 'auto',
-          background: '#f9fbfd',
+          background: '#fff',
         }}
       >
         {/* Tab Navigation */}
-        <div style={{ position: 'sticky', top: 0, background: '#fff', padding: '16px 20px', zIndex: 9 }}>
+        <div style={{ position: 'sticky', top: 0, background: '#F6F9FF', padding: '16px 20px', zIndex: 9 }}>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', overflowX: 'scroll' }}>
             {['text', 'logo', 'layout', 'themes'].map(tab => (
               <button
@@ -115,10 +115,10 @@ const SetUp = () => {
                   padding: '10px 20px',
                   borderRadius: '8px',
                   border: 'none',
-                  background: activeTab === tab ? '#ffffff' : '#f4f4f4',
+                  background: activeTab === tab ? '#ffffff' : '#4F46E5',
                   boxShadow: activeTab === tab ? '0 4px 8px rgba(0, 0, 0, 0.1)' : 'none',
                   fontWeight: activeTab === tab ? '600' : '500',
-                  color: activeTab === tab ? '#333' : '#777',
+                  color: activeTab === tab ? '#333' : '#fff',
                   cursor: 'pointer',
                   margin: activeTab === tab ? '2px 0px' : ""
                 }}
@@ -183,11 +183,11 @@ const SetUp = () => {
         </div>
 
         {/* Save & Reset Footer */}
-        <div style={{ position: 'sticky', bottom: 0, background: '#fff', padding: '16px 20px', zIndex: 9, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <p style={{ fontSize: '14px', color: '#888', margin: 0 }}>Apply Changes?</p>
+        <div style={{ position: 'sticky', bottom: 0, background: '#F6F9FF', padding: '16px 20px', zIndex: 9, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <p style={{ fontWeight: 600, fontSize: "14px", color: "#555", margin: 0 }}>Apply Changes?</p>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <button onClick={handleReset} style={{ background: '#f44336', color: '#fff', padding: '10px 25px', borderRadius: '8px', border: 'none' }}>Reset</button>
-            <button onClick={handleSave} style={{ background: '#4F46E5', color: '#fff', padding: '10px 25px', borderRadius: '8px', border: 'none' }}>Save</button>
+            <button onClick={handleReset} style={{ background: '#f44336', color: '#fff', padding: '10px 25px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>Reset</button>
+            <button onClick={handleSave} style={{ background: '#4F46E5 ', color: '#fff', padding: '10px 25px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}>Save</button>
           </div>
         </div>
         <ToastContainer />

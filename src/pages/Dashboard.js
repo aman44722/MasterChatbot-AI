@@ -21,7 +21,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 const Dashboard = () => {
   return (
-    <Box>
+    <Box sx={{ background: '#F6F9FF', padding: '20px', borderRadius: '10px', }}>
       <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
         Welcome, Admin 👋
       </Typography>

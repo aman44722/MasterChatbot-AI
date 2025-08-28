@@ -144,7 +144,7 @@ const LogoSettings = ({ companyLogo, setCompanyLogo, avatar, setAvatar }) => {
             alt="placeholder"
             style={{ width: "40px", height: "40px", marginBottom: "10px" }}
           />
-          <span style={{ fontSize: "14px", color: "#6b7280" }}>
+          <span style={{ fontWeight: 600, fontSize: "14px", color: "#555" }}>
             File Size should be less than 5 MB
           </span>
           <input
@@ -166,8 +166,19 @@ const LogoSettings = ({ companyLogo, setCompanyLogo, avatar, setAvatar }) => {
         </label>
       )}
 
-      <label style={{ marginTop: "20px", fontWeight: "500", display: "block" }}>
-        Avatar <span style={{ fontSize: "12px", color: "#888" }}>ⓘ</span>
+      <label
+        style={{
+          marginTop: "20px",
+          fontWeight: 600,
+          fontSize: "14px",
+          color: "#555",
+          display: "block",
+        }}
+      >
+        Avatar{" "}
+        <span style={{ fontWeight: 600, fontSize: "14px", color: "#555" }}>
+          ⓘ
+        </span>
       </label>
 
       <div style={{ position: "relative", marginTop: "10px" }}>
@@ -180,10 +191,15 @@ const LogoSettings = ({ companyLogo, setCompanyLogo, avatar, setAvatar }) => {
               top: "50%",
               transform: "translateY(-50%)",
               zIndex: 1,
-              background: "white",
+              background: "#4F46E5",
+              color: "white",
               border: "none",
               cursor: "pointer",
               height: "100%",
+              width: "20px",
+
+              borderTopRightRadius: "10px",
+              borderBottomRightRadius: "10px",
             }}
           >
             ◀
@@ -265,9 +281,13 @@ const LogoSettings = ({ companyLogo, setCompanyLogo, avatar, setAvatar }) => {
             top: "50%",
             transform: "translateY(-50%)",
             zIndex: 2,
-            background: "white",
+            background: "#4F46E5",
             border: "none",
             cursor: "pointer",
+            width: "20px",
+            color: "white",
+            borderTopLeftRadius: "10px",
+            borderBottomLeftRadius: "10px",
           }}
         >
           ▶

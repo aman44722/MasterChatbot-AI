@@ -53,6 +53,7 @@
   color: white;
   border-radius: 8px;
   font-weight: 500;
+
 }
 
 .mock-browser-layout {
@@ -91,7 +92,7 @@
 
 .nav-line {
   height: 12px;
-  background: #efeff1;
+  background: #fff;
   border-radius: 20px;
   margin: 8px 0;
 }
@@ -103,15 +104,15 @@
 }
 
 .block {
-  background: #efeff1;
+  background: #fff;
   flex: 1;
   height: 300px;
   border-radius: 20px;
 }
 
 .footer-block {
-  background: #efeff1;
-  height: 80px;
+  background: #fff;
+  height: 120px;
   border-radius: 20px;
 }
 

@@ -21,7 +21,7 @@ const LayoutSettings = ({
       {/* Bot Position */}
       <label style={{ fontWeight: 600, fontSize: "14px", color: "#555" }}>
         Bot Position{" "}
-        <span title="Select the corner where your bot appears">ℹ️</span>
+        <span title="Select the corner where your bot appears">ⓘ</span>
       </label>
       <div style={{ display: "flex", gap: "10px", margin: "10px 0 20px 0" }}>
         {botPositions.map((pos, idx) => (
@@ -40,7 +40,7 @@ const LayoutSettings = ({
               cursor: "pointer",
               border:
                 botPosition === pos.key
-                  ? "2px solid #00C896"
+                  ? "2px solid #4F46E5"
                   : "2px solid transparent",
             }}
           >
@@ -58,7 +58,7 @@ const LayoutSettings = ({
 
       {/* Message Bubble Style */}
       <label style={{ fontWeight: 600, fontSize: "14px", color: "#555" }}>
-        Message Bubbles <span title="Choose your chat bubble style">ℹ️</span>
+        Message Bubbles <span title="Choose your chat bubble style">ⓘ</span>
       </label>
       <div style={{ display: "flex", gap: "10px", margin: "10px 0 20px 0" }}>
         <div
@@ -71,7 +71,7 @@ const LayoutSettings = ({
             cursor: "pointer",
             border:
               selectedBubbleStyle === "style1"
-                ? "2px solid #00C896"
+                ? "2px solid #4F46E5"
                 : "1px solid #ccc",
           }}
         >
@@ -88,7 +88,7 @@ const LayoutSettings = ({
             cursor: "pointer",
             border:
               selectedBubbleStyle === "style2"
-                ? "2px solid #00C896"
+                ? "2px solid #4F46E5"
                 : "1px solid #ccc",
           }}
         >
@@ -105,7 +105,7 @@ const LayoutSettings = ({
             cursor: "pointer",
             border:
               selectedBubbleStyle === "style3"
-                ? "2px solid #00C896"
+                ? "2px solid #4F46E5"
                 : "1px solid #ccc",
           }}
         >
@@ -123,7 +123,7 @@ const LayoutSettings = ({
         }}
       >
         Option Border Radius{" "}
-        <span title="Adjust button corner roundness">ℹ️</span>
+        <span title="Adjust button corner roundness">ⓘ</span>
       </label>
       <div
         style={{
@@ -145,7 +145,7 @@ const LayoutSettings = ({
           style={{
             width: "26%",
             height: "40px",
-            background: "#007bff",
+            background: "#4F46E5",
             borderRadius: `${borderRadius}px`,
             transition: "border-radius 0.2s ease",
           }}
@@ -162,7 +162,7 @@ const LayoutSettings = ({
           display: "block",
         }}
       >
-        Button Text Alignment <span title="Align text inside buttons">ℹ️</span>
+        Button Text Alignment <span title="Align text inside buttons">ⓘ</span>
       </label>
       <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
         {["left", "center", "right"].map((align) => (
@@ -172,7 +172,7 @@ const LayoutSettings = ({
             style={{
               flex: 1,
               padding: "10px 15px",
-              background: "#007bff",
+              background: "#4F46E5",
               color: "white",
               border: textAlign === align ? "3px solid white" : "none",
               outline:
