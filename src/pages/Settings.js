@@ -298,32 +298,43 @@ function AutoTriggerTab() {
 /* ---------------- Whitelist / Blacklist Tab --------------- */
 /* ---------------- Whitelist / Blacklist Tab --------------- */
 function WhitelistTab() {
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useState(0); // 0 = whitelist, 1 = blacklist
   const [whitelistText, setWhitelistText] = useState("");
   const [blacklistText, setBlacklistText] = useState("");
   const navigate = useNavigate();
 
   const isWhitelist = tab === 0;
 
-  const onSave = async () => {
+  const normalizeDomains = (text) =>
+    text
+      .split(/[\n,]+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+  const save = async () => {
     try {
-      const domains = (isWhitelist ? whitelistText : blacklistText)
-        .split(/[\n,]+/)
-        .map(v => v.trim())
-        .filter(Boolean);
+      const domains = normalizeDomains(isWhitelist ? whitelistText : blacklistText);
+      if (!domains.length) return alert("Please enter at least one domain");
 
-      // Call your API
-      const res = await saveWhitelistingUrls(domains);
-
-      // Redirect → install page with URL param
-      navigate({
-        pathname: "/app/install",
-        search: `?tab=website&whitelist=${encodeURIComponent(JSON.stringify(domains))}`,
+      const token = localStorage.getItem("token");
+      const res = await fetch("/api/auth/settings/whitelist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({ domains }),
       });
-
-    } catch (err) {
-      console.error("Error saving whitelist:", err);
-      alert("Failed to save whitelist URLs");
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "Failed to save");
+      }
+      alert("Saved successfully");
+      // go to install page and pass nothing — install page will fetch snippet meta or snippet
+      navigate({ pathname: "/app/install", search: "?tab=website" });
+    } catch (e) {
+      console.error(e);
+      alert(e.message);
     }
   };
 
@@ -334,9 +345,16 @@ function WhitelistTab() {
         <Tab label="Blacklisting" />
       </Tabs>
 
-      <Typography sx={{ fontWeight: 700, mb: 1 }}>
-        {isWhitelist ? "Whitelisting URLs" : "Blacklisting URLs"}
-      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+        <Typography sx={{ fontWeight: 700 }}>
+          {isWhitelist ? "Whitelisting URLs" : "Blacklisting URLs"}
+        </Typography>
+        <Tooltip title="Separate with comma or press Enter for each entry.">
+          <IconButton size="small">
+            <InfoOutlinedIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </Box>
 
       <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
         Note: Separate different string by comma(,) or Enter.
@@ -350,12 +368,12 @@ function WhitelistTab() {
         onChange={(e) =>
           isWhitelist ? setWhitelistText(e.target.value) : setBlacklistText(e.target.value)
         }
-        placeholder="e.g. example.com, www.site.com"
+        placeholder={isWhitelist ? "e.g. example.com, www.site.com" : "e.g. badsite.com, *.spam.com"}
         sx={{ mb: 2 }}
       />
 
       <Box sx={{ display: "flex", gap: 2 }}>
-        <Button variant="contained" onClick={onSave}>Save</Button>
+        <Button variant="contained" onClick={save}>Save</Button>
 
         <Button
           variant="outlined"
@@ -367,7 +385,6 @@ function WhitelistTab() {
     </Box>
   );
 }
-
 
 /* --------------------- Reusable UI ----------------------- */
 function Row({ children }) {

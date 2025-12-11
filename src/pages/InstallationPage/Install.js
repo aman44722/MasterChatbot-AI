@@ -1,121 +1,102 @@
-import React, { useState } from "react";
-import { Grid, Paper, Typography, Button, Box, TextField } from "@mui/material";
-import { useNavigate, createSearchParams, useLocation } from "react-router-dom";
+// src/pages/Install.jsx  (replace your existing Install.jsx with this)
+import React, { useEffect, useState } from "react";
+import { Box, Paper, Typography, Button, TextField, Alert } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Install = () => {
     const navigate = useNavigate();
-    const location = useLocation();
-
-    // Read whitelist from URL params
-    const params = new URLSearchParams(location.search);
-    const whitelist = JSON.parse(params.get("whitelist") || "[]");
+    const [snippet, setSnippet] = useState("");
+    const [meta, setMeta] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const goToWhitelist = () => {
-        navigate({
-            pathname: "/app/settings",
-            search: `?${createSearchParams({ tab: "whitelist" })}`,
-        });
+        navigate({ pathname: "/app/settings", search: "?tab=whitelist" });
     };
 
-    const TABS = {
-        WEBSITE: "website",
-        INSTAGRAM: "instagram",
-        WHATSAPP: "whatsapp",
-        MESSENGER: "messenger",
-        WORDPRESS: "wordpress",
-        MOBILE: "mobile",
-        LANDING: "landing",
-        WIDGET: "widget",
-        DRUPAL: "drupal",
+    const fetchSnippet = async () => {
+        try {
+            setLoading(true);
+            const token = localStorage.getItem("token");
+            const res = await fetch("/api/auth/install/snippet", {
+                headers: { Authorization: "Bearer " + token },
+            });
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.message || "Failed to fetch snippet");
+            }
+            const data = await res.json();
+            setSnippet(data.snippet || "");
+            setMeta({ chatbotId: data.chatbotId, whitelist: data.whitelist || [] });
+        } catch (e) {
+            console.error(e);
+            alert(e.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const options = [
-        { id: TABS.WEBSITE, label: "Website / Blog Installation", icon: "🌐" },
-        { id: TABS.INSTAGRAM, label: "Instagram Installation", icon: "📸" },
-        { id: TABS.WHATSAPP, label: "WhatsApp Installation", icon: "💬" },
-        { id: TABS.MESSENGER, label: "Messenger Installation", icon: "📨" },
-        { id: TABS.WORDPRESS, label: "Wordpress Installation", icon: "📝" },
-        { id: TABS.MOBILE, label: "Mobile App Installation", icon: "📱" },
-        { id: TABS.LANDING, label: "Landing Page Installation", icon: "📄" },
-        { id: TABS.WIDGET, label: "Widget Installation", icon: "🔲" },
-        { id: TABS.DRUPAL, label: "Drupal Installation", icon: "🎭" },
-    ];
+    useEffect(() => {
+        fetchSnippet();
+        // eslint-disable-next-line
+    }, []);
 
-    const [activeTab, setActiveTab] = useState(TABS.WEBSITE);
-
-    // Generate script dynamically
-    const generatedScript = `
-<script>
-window.myChatbotConfig = {
-    allowedDomains: ${JSON.stringify(whitelist)}
-};
-</script>
-
-<script src="https://cdn.yoursite.com/chatbot.js"></script>
-`;
+    const copyToClipboard = async () => {
+        try {
+            await navigator.clipboard.writeText(snippet);
+            alert("Snippet copied to clipboard");
+        } catch {
+            alert("Unable to copy — select and copy manually");
+        }
+    };
 
     return (
-        <Box container spacing={4} style={{ padding: "24px", background: "#F6F9FF", display: 'flex', gap: '10px' }}>
-            {/* Left Section */}
+        <Box container spacing={4} style={{ padding: "24px", background: "#F6F9FF", display: "flex", gap: "10px" }}>
+            {/* Left: options if needed */}
             <Box sx={{ width: "40%" }}>
-                <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 2 }}>
-                    {options.map((item) => (
-                        <Paper
-                            key={item.id}
-                            onClick={() => setActiveTab(item.id)}
-                            elevation={activeTab === item.id ? 4 : 1}
-                            sx={{
-                                p: 2, textAlign: "center", cursor: "pointer", height: 150,
-                                border: activeTab === item.id ? "2px solid #1976d2" : "1px solid #e0e0e0",
-                                bgcolor: activeTab === item.id ? "#e3f2fd" : "#fff",
-                            }}
-                        >
-                            <Typography variant="h4">{item.icon}</Typography>
-                            <Typography variant="body2" sx={{ mt: 1, fontWeight: 500 }}>
-                                {item.label}
-                            </Typography>
-                        </Paper>
-                    ))}
-                </Box>
-            </Box>
-
-            {/* Right Section */}
-            <Box sx={{ width: "60%" }}>
-                <Paper
-                    elevation={3}
-                    sx={{
-                        p: 5, height: "80vh",
-                        display: "flex", flexDirection: "column", gap: 3,
-                        alignItems: "center",
-                    }}
-                >
-                    {activeTab === TABS.WEBSITE ? (
-                        <>
-                            <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                                Add this code before {"</head>"} tag on your website
-                            </Typography>
-
-                            <TextField
-                                fullWidth
-                                multiline
-                                minRows={8}
-                                value={generatedScript}
-                                InputProps={{ readOnly: true }}
-                                sx={{ bgcolor: "#f5f5f5" }}
-                            />
-
-                            <Button variant="contained" onClick={goToWhitelist}>
-                                Update Whitelisting URLs
-                            </Button>
-                        </>
-                    ) : (
-                        <Typography color="text.secondary" variant="h6">
-                            Installation guide for <b>{options.find(o => o.id === activeTab)?.label}</b> will appear here.
-                        </Typography>
-                    )}
+                <Paper sx={{ p: 2 }}>
+                    <Typography variant="h6">Installation Options</Typography>
+                    <Typography variant="body2" sx={{ mt: 1 }}>
+                        Use the script on allowed domains only.
+                    </Typography>
+                    <Box sx={{ mt: 2 }}>
+                        <Button variant="contained" onClick={goToWhitelist}>Update Whitelisting URLs</Button>
+                    </Box>
                 </Paper>
             </Box>
-        </Box >
+
+            {/* Right: snippet */}
+            <Box sx={{ width: "60%" }}>
+                <Paper sx={{ p: 4 }}>
+                    <Typography variant="h6" sx={{ mb: 2 }}>
+                        Copy the installation code and paste it before the closing &lt;/head&gt; tag of your website
+                    </Typography>
+
+                    {meta && meta.whitelist && meta.whitelist.length === 0 && (
+                        <Alert severity="warning" sx={{ mb: 2 }}>
+                            You have not added any whitelisted domains. Please add your domain in Whitelisting first.
+                        </Alert>
+                    )}
+
+                    <TextField
+                        fullWidth
+                        multiline
+                        minRows={8}
+                        value={snippet}
+                        InputProps={{ readOnly: true }}
+                        sx={{ mb: 2, background: "#fafafa" }}
+                    />
+
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                        <Button variant="contained" onClick={copyToClipboard} disabled={!snippet || loading}>
+                            Copy Snippet
+                        </Button>
+                        <Button variant="outlined" onClick={() => window.open(`/api/auth/install/snippet`, "_blank")}>
+                            Open Snippet (raw)
+                        </Button>
+                    </Box>
+                </Paper>
+            </Box>
+        </Box>
     );
 };
 
