@@ -82,7 +82,7 @@ window.myChatbotConfig = {
             {/* Right Section */}
             <Box sx={{ width: "60%" }}>
                 <Paper
-                    elevation={2}
+                    elevation={3}
                     sx={{
                         p: 5, height: "80vh",
                         display: "flex", flexDirection: "column", gap: 3,
