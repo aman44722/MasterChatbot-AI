@@ -69,7 +69,7 @@ const Sidebar = () => {
           icon: <DownloadIcon fontSize='10px' sx={{
             background: '#4F46E5', borderRadius: '20px', width: '20px', height: '20px', padding: '3px'
           }} />,
-          path: '/setup/install',
+          path: '/install',
         },
       ],
     },

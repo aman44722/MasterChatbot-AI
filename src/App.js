@@ -21,6 +21,7 @@ import './App.css';
 // ✅ Import your home page component
 import HomePage from './pages/Home';
 import PublicLayout from './components/Common/PublicLayout';
+import Install from './pages/InstallationPage/Install';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
       <Route path="/settings" element={<Navigate to="/app/settings" replace />} />
       <Route path="/setup" element={<Navigate to="/app/setup" replace />} />
       <Route path="/flow-setup" element={<Navigate to="/app/flow-setup" replace />} />
+      <Route path="/install" element={<Navigate to="/app/install" replace />} />
       <Route path="/logout" element={<Navigate to="/app/logout" replace />} />
       <Route path="/account" element={<Navigate to="/app/account" replace />} />
       <Route path="/dashboard" element={<Navigate to="/app/dashboard" replace />} />
@@ -59,6 +61,7 @@ function App() {
           <Route path="settings" element={<Settings />} />
           <Route path="setup" element={<SetUp />} />
           <Route path="flow-setup" element={<FlowSetup />} />
+          <Route path="install" element={<Install />} />
           <Route path="logout" element={<Logout />} />
           <Route path="account" element={<Account />} />
 
